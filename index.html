@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
-<title>Tự động tìm font chữ</title>
+<title>Tự Động Tìm Font Chữ</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='78' font-size='78'%3E%F0%9F%94%8E%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -38,140 +38,80 @@
   a{ color:var(--blue); }
   :focus-visible{ outline:2px solid var(--blue); outline-offset:2px; }
   button{ font:inherit; }
+  code{ font-family:var(--mono); }
 
-  .topbar{
-    border-bottom:3px solid var(--ink);
-    padding:18px 20px 16px;
-    position:relative;
-    overflow:hidden;
-  }
-  .topbar-inner{ max-width:1100px; margin:0 auto; display:flex; align-items:flex-end; gap:16px; flex-wrap:wrap; }
+  /* header */
+  .topbar{ border-bottom:3px solid var(--ink); padding:18px 20px 44px; position:relative; }
+  .topbar-inner{ max-width:1300px; margin:0 auto; }
   .logo{
-    font-family:var(--display);
-    font-weight:600;
-    font-size:clamp(34px,7vw,52px);
-    letter-spacing:0.5px;
-    text-transform:uppercase;
-    line-height:0.9;
-    margin:0;
+    font-family:var(--display); font-weight:600; font-size:clamp(28px,5.5vw,46px);
+    letter-spacing:0.5px; text-transform:uppercase; line-height:1; margin:0;
   }
-  .badge{
-    border:2px solid var(--stamp);
-    color:var(--stamp);
-    font-family:var(--mono);
-    font-size:11px;
-    font-weight:700;
-    letter-spacing:1px;
-    padding:3px 8px;
-    border-radius:3px;
-    transform:rotate(-6deg);
-    mix-blend-mode:multiply;
-    align-self:center;
-  }
-  .tagline{
-    max-width:640px;
-    color:var(--ink-soft);
-    font-size:14.5px;
-    margin:8px 0 0;
+  .credit{
+    position:absolute; right:20px; bottom:10px; text-align:right;
+    font-size:10.5px; line-height:1.4; color:var(--ink-soft);
+    font-family:var(--mono); letter-spacing:0.2px;
   }
 
-  .app-shell{ max-width:1100px; margin:0 auto; padding:22px 20px 60px; }
-  @media (min-width:900px){
-    .app-shell{ display:grid; grid-template-columns:400px 1fr; gap:30px; align-items:start; }
-    .panel-left{ position:sticky; top:18px; }
-  }
+  .app-shell{ max-width:1300px; margin:0 auto; padding:22px 20px 50px; }
 
-  .ticket{
-    background:var(--white);
-    border:2px solid var(--ink);
-    border-radius:2px;
-  }
-  .step{
-    padding:18px 18px 20px;
-    border-bottom:2px dashed var(--line);
-  }
-  .step:last-child{ border-bottom:none; }
-  .step-head{ display:flex; align-items:center; gap:10px; margin:0 0 12px; }
+  /* 4-column main grid */
+  .main-grid{ display:grid; grid-template-columns:1fr; gap:16px; margin-bottom:28px; align-items:start; }
+  @media (min-width:700px){ .main-grid{ grid-template-columns:1fr 1fr; } }
+  @media (min-width:1100px){ .main-grid{ grid-template-columns:repeat(4,1fr); } }
+
+  .card{ background:var(--white); border:2px solid var(--ink); border-radius:2px; padding:16px; }
+  .card-head{ display:flex; align-items:center; gap:10px; margin:0 0 10px; }
+  .card-note{ margin:0 0 12px; font-size:12.5px; color:var(--ink-soft); }
   .step-num{
-    width:26px; height:26px; flex:none;
-    background:var(--ink); color:var(--paper);
+    width:26px; height:26px; flex:none; background:var(--ink); color:var(--paper);
     font-family:var(--mono); font-weight:700; font-size:13px;
-    display:flex; align-items:center; justify-content:center;
-    border-radius:3px;
+    display:flex; align-items:center; justify-content:center; border-radius:3px;
   }
-  .step-title{ margin:0; font-size:16px; font-weight:700; }
-  .step-note{ margin:0 0 12px 36px; font-size:13px; color:var(--ink-soft); }
+  .card-title{ margin:0; font-size:15.5px; font-weight:700; }
 
   .dropzone{
-    margin-left:36px;
-    border:2px dashed var(--line);
-    border-radius:3px;
-    padding:22px 14px;
-    text-align:center;
-    cursor:pointer;
-    color:var(--ink-soft);
-    font-size:13.5px;
-    transition:border-color .15s, background .15s;
+    border:2px dashed var(--line); border-radius:3px; padding:22px 14px; text-align:center;
+    cursor:pointer; color:var(--ink-soft); font-size:13px; transition:border-color .15s, background .15s;
   }
   .dropzone.is-drag{ border-color:var(--blue); background:rgba(43,66,88,0.06); }
   .dropzone strong{ color:var(--ink); }
   input[type=file]{ display:none; }
 
-  .canvas-card{ margin-left:36px; }
-  .canvas-stage{
-    position:relative;
-    line-height:0;
-    border:1px solid var(--line);
-    background:
-      repeating-conic-gradient(#ddd 0% 25%, #eee 0% 50%) 50% / 16px 16px;
-    touch-action:none;
-    max-width:100%;
-    overflow:hidden;
+  /* crop / zoom */
+  .zoom-controls{ display:flex; align-items:center; gap:6px; margin-bottom:10px; flex-wrap:wrap; }
+  .zoom-pct{ font-family:var(--mono); font-size:12px; min-width:40px; text-align:center; color:var(--ink-soft); }
+  .canvas-viewport{
+    border:1px solid var(--line); max-width:100%; max-height:380px; overflow:auto; margin-bottom:10px;
+    background: repeating-conic-gradient(#ddd 0% 25%, #eee 0% 50%) 50% / 16px 16px;
   }
-  #imgCanvas{ display:block; width:100%; height:auto; }
-  #overlayCanvas{ position:absolute; inset:0; width:100%; height:100%; cursor:crosshair; }
+  .canvas-viewport.is-pan{ cursor:grab; }
+  .canvas-stage{ position:relative; line-height:0; }
+  #imgCanvas{ display:block; }
+  #overlayCanvas{ position:absolute; inset:0; touch-action:none; cursor:crosshair; }
 
-  .row{ margin-left:36px; display:flex; gap:10px; margin-top:10px; flex-wrap:wrap; }
-
-  label.field-label{ display:block; font-size:12.5px; color:var(--ink-soft); margin-bottom:4px; }
+  .row{ display:flex; gap:10px; margin-top:4px; flex-wrap:wrap; }
+  label.field-label{ display:block; font-size:12px; color:var(--ink-soft); margin-bottom:4px; }
   input[type=text]{
-    width:100%;
-    border:1.5px solid var(--ink);
-    border-radius:2px;
-    padding:9px 10px;
-    font-family:var(--mono);
-    font-size:14px;
-    background:var(--white);
-    color:var(--ink);
+    width:100%; border:1.5px solid var(--ink); border-radius:2px; padding:9px 10px;
+    font-family:var(--mono); font-size:13.5px; background:var(--white); color:var(--ink);
   }
-  .fields{ margin-left:36px; display:grid; grid-template-columns:90px 1fr; gap:12px; margin-top:4px; }
+  .fields{ display:grid; grid-template-columns:1fr; gap:10px; margin-bottom:12px; }
 
   .btn-primary{
-    margin:16px 0 0 36px;
-    background:var(--ink);
-    color:var(--paper);
-    border:none;
-    padding:12px 18px;
-    font-weight:700;
-    font-size:14px;
-    letter-spacing:0.4px;
-    border-radius:2px;
-    cursor:pointer;
+    background:var(--ink); color:var(--paper); border:none; padding:11px 16px; font-weight:700;
+    font-size:13.5px; letter-spacing:0.3px; border-radius:2px; cursor:pointer; margin-top:4px; width:100%;
   }
   .btn-primary:disabled{ opacity:0.45; cursor:not-allowed; }
   .btn-primary:not(:disabled):hover{ background:#3a2c1c; }
   .btn-ghost{
-    background:transparent;
-    border:1.5px solid var(--ink);
-    color:var(--ink);
-    padding:8px 12px;
-    font-size:13px;
-    border-radius:2px;
-    cursor:pointer;
+    background:transparent; border:1.5px solid var(--ink); color:var(--ink); padding:7px 11px;
+    font-size:12.5px; border-radius:2px; cursor:pointer;
   }
   .btn-ghost:hover{ background:rgba(36,27,18,0.06); }
+  .btn-ghost:disabled{ opacity:0.5; cursor:not-allowed; }
 
-  .status{ margin:10px 0 0 36px; font-size:13px; min-height:18px; color:var(--stamp); }
+  .status{ margin-top:10px; font-size:12.5px; min-height:16px; color:var(--stamp); }
   .status[data-kind="info"]{ color:var(--ink-soft); }
 
   .spinner{
@@ -181,250 +121,179 @@
   }
   @keyframes spin{ to{ transform:rotate(360deg); } }
 
-  .library{ margin:18px 0 0; padding:0 18px 18px; }
-  .library summary{ cursor:pointer; font-size:13px; color:var(--ink-soft); }
-  .lib-groups{ display:grid; gap:6px; margin-top:10px; font-size:12.5px; color:var(--ink-soft); }
-  .lib-groups b{ color:var(--ink); }
-
-  .source-tiers{ display:grid; gap:10px; margin-top:10px; }
-  .tier{ padding:10px 12px; border:1px solid var(--line); border-radius:2px; background:var(--white); }
-  .tier b{ display:block; font-size:12.5px; color:var(--ink); margin-bottom:3px; }
-  .tier span{ font-size:12.5px; color:var(--ink-soft); }
-  .scan-row{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:8px; }
-  .scan-row input[type=number]{ width:90px; border:1.5px solid var(--ink); border-radius:2px; padding:6px 8px; font-family:var(--mono); font-size:13px; }
-  .local-status{ font-size:12.5px; color:var(--ink-soft); margin-top:6px; min-height:16px; }
-  .manual-links{ display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
-  .manual-links a{ font-size:12.5px; border:1px solid var(--line); padding:4px 8px; border-radius:2px; text-decoration:none; color:var(--blue); }
-  .manual-links a:hover{ border-color:var(--blue); }
-
-  .panel-right h2{
-    font-family:var(--display);
-    text-transform:uppercase;
-    letter-spacing:0.5px;
-    font-size:20px;
-    margin:26px 0 12px;
-  }
-  @media (min-width:900px){ .panel-right h2{ margin-top:0; } }
-
-  #resultsEmpty{ color:var(--ink-soft); font-size:14px; border:1px dashed var(--line); padding:18px; border-radius:2px; }
-
-  #results{
-    opacity:0; transform:translateY(8px);
-    transition:opacity .35s ease, transform .35s ease;
-  }
+  /* results column */
+  #resultsEmpty{ color:var(--ink-soft); font-size:13.5px; border:1px dashed var(--line); padding:16px; border-radius:2px; }
+  #results{ opacity:0; transform:translateY(8px); transition:opacity .35s ease, transform .35s ease; }
   #results.is-visible{ opacity:1; transform:translateY(0); }
-
   .result-card{
-    background:var(--white);
-    border:1px solid var(--line);
-    border-left:5px solid var(--blue);
-    border-radius:2px;
-    padding:12px 14px;
-    margin-bottom:10px;
+    background:var(--paper); border:1px solid var(--line); border-left:5px solid var(--blue);
+    border-radius:2px; padding:11px 13px; margin-bottom:9px;
   }
   .result-card.is-top{ border-left-color:var(--stamp); }
-  .result-head{ display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; }
-  .rank{ font-family:var(--mono); font-weight:700; color:var(--ink-soft); font-size:13px; }
-  .score{ font-family:var(--mono); font-weight:700; font-size:14px; color:var(--stamp); }
+  .result-head{ display:flex; align-items:baseline; gap:9px; flex-wrap:wrap; }
+  .rank{ font-family:var(--mono); font-weight:700; color:var(--ink-soft); font-size:12.5px; }
+  .score{ font-family:var(--mono); font-weight:700; font-size:13.5px; color:var(--stamp); }
   .result-card:not(.is-top) .score{ color:var(--blue); }
-  .fname{ font-weight:700; font-size:14.5px; }
-  .fcat{ margin-left:auto; font-size:11px; color:var(--ink-soft); border:1px solid var(--line); padding:1px 6px; border-radius:2px; }
-  .preview{
-    margin-top:8px; font-size:28px; line-height:1.3; word-break:break-word;
-    color:var(--ink);
-  }
+  .fname{ font-weight:700; font-size:14px; }
+  .fcat{ margin-left:auto; font-size:10.5px; color:var(--ink-soft); border:1px solid var(--line); padding:1px 6px; border-radius:2px; }
+  .preview{ margin-top:7px; font-size:25px; line-height:1.3; word-break:break-word; color:var(--ink); }
   .btn-copy{
-    margin-top:8px;
-    background:transparent;
-    border:1px solid var(--ink-soft);
-    color:var(--ink-soft);
-    font-size:12px;
-    padding:5px 9px;
-    border-radius:2px;
-    cursor:pointer;
+    margin-top:7px; background:transparent; border:1px solid var(--ink-soft); color:var(--ink-soft);
+    font-size:11.5px; padding:4px 8px; border-radius:2px; cursor:pointer;
   }
   .btn-copy:hover{ border-color:var(--ink); color:var(--ink); }
 
-  footer{
-    max-width:1100px; margin:0 auto; padding:0 20px 40px;
-    font-size:12px; color:var(--ink-soft);
+  /* 4-tier data sources */
+  .tiers-section{ margin-bottom:30px; }
+  .tiers-section > h2{ font-family:var(--display); text-transform:uppercase; letter-spacing:0.5px; font-size:19px; margin:0 0 12px; }
+  .source-tiers{ display:grid; grid-template-columns:1fr; gap:12px; }
+  @media (min-width:700px){ .source-tiers{ grid-template-columns:1fr 1fr; } }
+  .tier{ padding:12px 14px; border:1px solid var(--line); border-radius:2px; background:var(--white); }
+  .tier b{ display:block; font-size:13px; color:var(--ink); margin-bottom:4px; }
+  .tier > span{ font-size:12.5px; color:var(--ink-soft); display:block; }
+  .scan-row{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:9px; }
+  .scan-row input[type=number], .scan-row input[type=text]{
+    border:1.5px solid var(--ink); border-radius:2px; padding:6px 8px; font-family:var(--mono); font-size:12.5px;
   }
-  footer code{ font-family:var(--mono); background:var(--paper-deep); padding:1px 4px; border-radius:2px; }
+  .scan-row input[type=number]{ width:90px; }
+  .scan-row input[type=text]{ flex:1; min-width:160px; }
+  .local-status{ font-size:12px; color:var(--ink-soft); margin:8px 0 0; min-height:16px; }
+  .tier-help{ font-size:11px; color:var(--ink-soft); margin:8px 0 0; line-height:1.4; }
+  .lib-groups{ display:grid; gap:5px; margin-top:10px; font-size:11.5px; color:var(--ink-soft); }
+  .lib-groups b{ color:var(--ink); font-size:11.5px; }
+  .manual-links{ display:flex; gap:8px; flex-wrap:wrap; margin-top:9px; }
+  .manual-links a{ font-size:12px; border:1px solid var(--line); padding:4px 9px; border-radius:2px; text-decoration:none; color:var(--blue); }
+  .manual-links a:hover{ border-color:var(--blue); }
 
-  .creator-credit{margin-left:auto;text-align:right;font-family:var(--mono);font-size:11px;line-height:1.55;font-weight:700;letter-spacing:.6px;color:var(--stamp);align-self:flex-end}
-  .topbar-inner{max-width:1500px;align-items:flex-end}
-  .logo{font-size:clamp(30px,4vw,48px)}
-  .app-shell{max-width:1500px}
-  .canvas-card{overflow:auto;max-height:460px;margin-left:36px;border:1px solid var(--line);background:#eee}
-  .canvas-stage{width:max-content;max-width:none;overflow:hidden;border:0}
-  #imgCanvas{width:100%;height:100%}
-  #overlayCanvas{width:100%;height:100%}
-  .zoom-toolbar{margin:0 0 8px 36px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-  #zoomLabel{font:12px var(--mono);min-width:48px;text-align:center}
-  .selection-hint{font-size:12px;color:var(--ink-soft);align-self:center}
-  .job-controls{margin:8px 0 0 36px;display:flex;gap:8px;flex-wrap:wrap}
-  .job-controls button{min-width:92px}
-  .source-tiers{grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch}
-  .tier{min-width:0}
-  .tier span{display:block}
-  .tier .scan-row span{display:inline;font-size:12px}
-  @media(min-width:1050px){
-    .app-shell{display:grid;grid-template-columns:minmax(0,1.85fr) minmax(340px,1fr);gap:22px;align-items:start}
-    .panel-left{position:static;min-width:0}
-    .panel-left .ticket{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:start}
-    .panel-left .step{min-width:0;border-bottom:2px dashed var(--line);border-right:1px dashed var(--line);padding:14px 12px}
-    .panel-left .step:nth-child(3){border-right:0}
-    .panel-left .step-note,.panel-left .dropzone,.panel-left .canvas-card,.panel-left .row,.panel-left .fields,.panel-left .btn-primary,.panel-left .status,.panel-left .zoom-toolbar,.panel-left .job-controls{margin-left:0}
-    .panel-left .fields{grid-template-columns:1fr;gap:8px}
-    .panel-left .canvas-card{max-height:390px}
-    .panel-left .library{grid-column:1/-1;margin-top:0}
-    .panel-right{position:sticky;top:14px;max-height:calc(100vh - 28px);overflow:auto;padding-right:4px}
-    .panel-right h2{margin-top:0}
-  }
-  @media(max-width:1049px){
-    .app-shell{display:block}
-    .panel-right{margin-top:24px}
-  }
-  @media(max-width:650px){
-    .topbar-inner{align-items:flex-start;flex-direction:column}
-    .creator-credit{margin-left:0;text-align:left;align-self:flex-start}
-    .source-tiers{grid-template-columns:1fr}
-    .app-shell{padding:14px 10px 40px}
-    .step{padding:14px 10px}
-    .canvas-card,.dropzone,.step-note,.row,.fields,.btn-primary,.status,.zoom-toolbar,.job-controls{margin-left:0}
-  }
-
+  footer{ max-width:1300px; margin:0 auto; padding:0 20px 40px; font-size:11.5px; color:var(--ink-soft); }
+  footer code{ background:var(--paper-deep); padding:1px 4px; border-radius:2px; }
 </style>
 </head>
 <body>
 
 <header class="topbar">
   <div class="topbar-inner">
-    <h1 class="logo">TỰ ĐỘNG TÌM FONT CHỮ</h1>
-    <div class="creator-credit">CÔNG CỤ ĐƯỢC PHÁT TRIỂN TỪ Ý TƯỞNG<br>CỦA BÙI VĂN THANH</div>
+    <h1 class="logo">Tự Động Tìm Font Chữ</h1>
   </div>
+  <div class="credit">CÔNG CỤ ĐƯỢC PHÁT TRIỂN<br>TỪ Ý TƯỞNG CỦA BÙI VĂN THANH</div>
 </header>
 
 <div class="app-shell">
 
-  <div class="panel-left">
-    <div class="ticket">
+  <div class="main-grid">
 
-      <div class="step">
-        <div class="step-head">
-          <span class="step-num">01</span>
-          <h2 class="step-title">Tải ảnh lên</h2>
-        </div>
-        <p class="step-note">Ảnh chụp bìa thùng, bản in mẫu, hoặc ảnh chữ bất kỳ. Nền càng tương phản với chữ, kết quả càng chính xác.</p>
-        <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Chọn hoặc kéo thả ảnh vào đây">
-          <strong>Chọn ảnh</strong> hoặc kéo thả vào đây<br>(cũng có thể dán ảnh bằng Ctrl/Cmd+V)
-        </div>
-        <input type="file" id="fileInput" accept="image/*">
+    <div class="card" id="uploadCard">
+      <div class="card-head"><span class="step-num">01</span><h2 class="card-title">Tải ảnh lên</h2></div>
+      <p class="card-note">Ảnh chụp bìa thùng, bản in mẫu, hoặc ảnh chữ bất kỳ.</p>
+      <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Chọn hoặc kéo thả ảnh vào đây">
+        <strong>Chọn ảnh</strong> hoặc kéo thả vào đây<br>(hoặc dán bằng Ctrl/Cmd+V)
       </div>
+      <input type="file" id="fileInput" accept="image/*">
+    </div>
 
-      <div class="step" id="cropStep" hidden>
-        <div class="step-head">
-          <span class="step-num">02</span>
-          <h2 class="step-title">Khoanh vùng ký tự</h2>
-        </div>
-        <p class="step-note">Có thể khoanh vùng chữ để tăng độ chính xác. Không khoanh cũng được: hệ thống sẽ phân tích toàn bộ ảnh.</p>
-        <div class="zoom-toolbar">
-          <button type="button" class="btn-ghost" id="zoomOutBtn" aria-label="Thu nhỏ ảnh">−</button>
-          <span id="zoomLabel">100%</span>
-          <button type="button" class="btn-ghost" id="zoomInBtn" aria-label="Phóng to ảnh">+</button>
-          <button type="button" class="btn-ghost" id="zoomResetBtn">Vừa khung</button>
-        </div>
-        <div class="canvas-card">
-          <div class="canvas-stage" id="canvasStage">
-            <canvas id="imgCanvas"></canvas>
-            <canvas id="overlayCanvas"></canvas>
-          </div>
-        </div>
-        <div class="row">
-          <button type="button" class="btn-ghost" id="clearSelBtn">Bỏ vùng chọn</button>
-          <span class="selection-hint">Cuộn hoặc kéo ảnh khi phóng to để tìm đúng dòng chữ.</span>
+    <div class="card" id="cropCard" hidden>
+      <div class="card-head"><span class="step-num">02</span><h2 class="card-title">Khoanh vùng ký tự</h2></div>
+      <p class="card-note">Phóng to để khoanh chính xác ký tự nhỏ trong ảnh lớn, rồi chuyển chế độ Di chuyển để kéo xem các góc ảnh.</p>
+      <div class="zoom-controls">
+        <button type="button" class="btn-ghost" id="zoomOutBtn" aria-label="Thu nhỏ">−</button>
+        <span class="zoom-pct" id="zoomPct">100%</span>
+        <button type="button" class="btn-ghost" id="zoomInBtn" aria-label="Phóng to">+</button>
+        <button type="button" class="btn-ghost" id="zoomResetBtn">Đặt lại</button>
+        <button type="button" class="btn-ghost" id="modeToggleBtn">Chế độ: Khoanh vùng</button>
+      </div>
+      <div class="canvas-viewport" id="canvasViewport">
+        <div class="canvas-stage" id="canvasStage">
+          <canvas id="imgCanvas"></canvas>
+          <canvas id="overlayCanvas"></canvas>
         </div>
       </div>
+      <div class="row">
+        <button type="button" class="btn-ghost" id="clearSelBtn">Bỏ vùng chọn</button>
+      </div>
+    </div>
 
-      <div class="step" id="runStep" hidden>
-        <div class="step-head">
-          <span class="step-num">03</span>
-          <h2 class="step-title">Thông tin nhận diện</h2>
+    <div class="card" id="runCard" hidden>
+      <div class="card-head"><span class="step-num">03</span><h2 class="card-title">Ký tự mẫu &amp; chạy so khớp</h2></div>
+      <div class="fields">
+        <div>
+          <label class="field-label" for="sampleInput">Ký tự mẫu</label>
+          <input type="text" id="sampleInput" maxlength="6" value="T" autocomplete="off">
         </div>
-        <div class="fields">
-          <div>
-            <label class="field-label" for="sampleInput">Ký tự mẫu</label>
-            <input type="text" id="sampleInput" maxlength="6" value="T" autocomplete="off">
-          </div>
-          <div>
-            <label class="field-label" for="previewInput">Văn bản xem trước</label>
-            <input type="text" id="previewInput" maxlength="40" value="HÀNG DỄ VỠ" autocomplete="off">
-          </div>
+        <div>
+          <label class="field-label" for="previewInput">Văn bản xem trước</label>
+          <input type="text" id="previewInput" maxlength="40" value="HÀNG DỄ VỠ" autocomplete="off">
         </div>
-        <button type="button" class="btn-primary" id="runBtn" disabled>BẮT ĐẦU TÌM FONT</button>
-        <div class="job-controls">
-          <button type="button" class="btn-ghost" id="pauseBtn" disabled>Tạm dừng</button>
-          <button type="button" class="btn-ghost" id="cancelBtn" disabled>Hủy</button>
+      </div>
+      <button type="button" class="btn-primary" id="runBtn" disabled>Tìm font tương tự</button>
+      <div class="row" id="matchControlsRow" hidden>
+        <button type="button" class="btn-ghost" id="pauseBtn">Tạm dừng</button>
+        <button type="button" class="btn-ghost" id="cancelBtn">Hủy</button>
+      </div>
+      <p class="status" id="statusEl"></p>
+    </div>
+
+    <div class="card" id="resultsCard">
+      <div class="card-head"><h2 class="card-title">Kết quả: 10 font gần giống nhất</h2></div>
+      <p id="resultsEmpty">Chưa có kết quả. Tải ảnh lên, khoanh vùng một ký tự rồi bấm “Tìm font tương tự”.</p>
+      <div id="results"></div>
+    </div>
+
+  </div>
+
+  <section class="tiers-section">
+    <h2>Nguồn dữ liệu font (4 tầng)</h2>
+    <div class="source-tiers">
+
+      <div class="tier">
+        <b>1. Font cài trên máy tính</b>
+        <span id="localTierNote">Đang kiểm tra trình duyệt…</span>
+        <div class="scan-row" id="localScanRow" hidden>
+          <button type="button" class="btn-ghost" id="scanLocalBtn">Quét font trên máy</button>
+          <label for="localLimitInput" style="font-size:12px;color:var(--ink-soft);">Giới hạn:</label>
+          <input type="number" id="localLimitInput" value="3000" min="1" step="100">
         </div>
-        <p class="status" id="statusEl" aria-live="polite"></p>
+        <p class="local-status" id="localStatus"></p>
       </div>
 
-      <details class="library" open>
-        <summary>4 tầng dữ liệu font độc lập</summary>
-        <div class="source-tiers">
-          <div class="tier">
-            <b>1. Font cài trên máy tính</b>
-            <span id="localTierNote">Đang kiểm tra trình duyệt…</span>
-            <div class="scan-row" id="localScanRow" hidden>
-              <button type="button" class="btn-ghost" id="scanLocalBtn">Quét font trên máy</button>
-              <span>Không đặt giới hạn số lượng do ứng dụng.</span>
-            </div>
-            <p class="local-status" id="localStatus"></p>
-          </div>
-          <div class="tier">
-            <b>2. Toàn bộ Google Fonts</b>
-            <span id="googleTierNote">Tải danh mục các họ font Google đang cung cấp qua Developer API.</span>
-            <div class="scan-row">
-              <input type="text" id="googleApiKey" placeholder="Google Fonts API key" autocomplete="off" spellcheck="false" style="flex:1;min-width:150px;">
-              <button type="button" class="btn-ghost" id="loadGoogleBtn">Tải danh mục Google</button>
-            </div>
-            <p class="local-status" id="googleStatus" aria-live="polite"></p>
-            <div class="lib-groups" id="libGroups"></div>
-          </div>
-          <div class="tier">
-            <b>3. Kho dữ liệu font công khai</b>
-            <span>Tra cứu danh mục font công khai độc lập từ Fontsource; đây là lớp dữ liệu để xây dựng thư viện font lớn, có metadata về họ font, kiểu chữ, trọng lượng và bộ ký tự.</span>
-            <div class="scan-row"><button type="button" class="btn-ghost" id="loadPublicFontsBtn">Nạp kho font công khai</button></div>
-            <p class="local-status" id="publicFontsStatus" aria-live="polite"></p>
-          </div>
-          <div class="tier">
-            <b>4. Tìm kiếm trên các website font</b>
-            <span>Lớp tìm kiếm web riêng: truy vấn trang phân phối font, kho font và công cụ nhận diện; cần dịch vụ máy chủ để tìm kiếm, lấy dữ liệu và kiểm tra nguồn/giấy phép.</span>
-            <div class="manual-links">
-              <a href="https://www.myfonts.com/pages/whatthefont" target="_blank" rel="noopener">WhatTheFont</a>
-              <a href="https://www.fontspring.com/matcherator" target="_blank" rel="noopener">Fontspring Matcherator</a>
-              <a href="https://www.whatfontis.com/" target="_blank" rel="noopener">WhatFontIs</a>
-              <a href="https://www.fontsquirrel.com/" target="_blank" rel="noopener">Font Squirrel</a>
-              <a href="https://www.fontshare.com/" target="_blank" rel="noopener">Fontshare</a>
-              <a href="https://open-foundry.com/" target="_blank" rel="noopener">Open Foundry</a>
-            </div>
-            <p class="local-status">Tự động tìm và đối chiếu dữ liệu nhiều website sẽ được nối với AI/backend ở giai đoạn hoàn thiện.</p>
-          </div>
+      <div class="tier">
+        <b>2. Google Fonts</b>
+        <span>Mặc định dùng 48 font có sẵn. Muốn dùng toàn bộ danh sách Google Fonts (hơn 1700 font), dán API key miễn phí vào đây rồi bấm nạp.</span>
+        <div class="scan-row">
+          <input type="text" id="googleApiKeyInput" placeholder="Google Fonts API key (tuỳ chọn)">
+          <button type="button" class="btn-ghost" id="loadFullCatalogBtn">Nạp toàn bộ danh sách</button>
         </div>
-      </details>
+        <p class="local-status" id="googleCatalogStatus"></p>
+        <p class="tier-help">Lấy key miễn phí: Google Cloud Console → APIs &amp; Services → bật "Google Fonts Developer API" → Tạo thông tin xác thực (API key). Key này chỉ đọc danh sách font công khai nên an toàn khi để trong mã nguồn công khai; nên giới hạn theo tên miền GitHub Pages của bạn trong phần hạn chế khoá để tránh bị dùng ké.</p>
+        <div class="lib-groups" id="libGroups"></div>
+      </div>
+
+      <div class="tier">
+        <b>3. Kho dữ liệu font mở rộng (tự thêm)</b>
+        <span>Nạp một bộ dữ liệu font lớn do bạn tự chuẩn bị, đặt cùng thư mục với trang này (không dính CORS vì cùng nguồn). Tạo file <code>fonts-db/manifest.json</code> dạng mảng <code>[{"label":"Tên hiển thị","url":"fonts-db/ten-file.woff2"}, ...]</code> — nơi gom các font mở, được phép chia sẻ công khai mà bạn muốn mọi người cùng dùng, tách biệt với font riêng trên máy bạn ở tầng 1.</span>
+        <div class="scan-row">
+          <button type="button" class="btn-ghost" id="loadDbBtn">Nạp kho dữ liệu font</button>
+        </div>
+        <p class="local-status" id="dbStatus">Chưa kiểm tra fonts-db/manifest.json.</p>
+      </div>
+
+      <div class="tier">
+        <b>4. Trang web nhận diện font khác</b>
+        <span>Trình duyệt không thể tự quét các trang web khác (giới hạn bảo mật CORS, và trang này không có máy chủ riêng để truy vấn hộ) — đây là thao tác thủ công: tải lại ảnh lên các công cụ có cơ sở dữ liệu riêng lớn hơn để so thêm khi cần.</span>
+        <div class="manual-links">
+          <a href="https://www.myfonts.com/pages/whatthefont" target="_blank" rel="noopener">WhatTheFont</a>
+          <a href="https://www.fontspring.com/matcherator" target="_blank" rel="noopener">Fontspring Matcherator</a>
+          <a href="https://www.whatfontis.com/" target="_blank" rel="noopener">WhatFontIs</a>
+        </div>
+      </div>
 
     </div>
-  </div>
-
-  <div class="panel-right">
-    <h2>KẾT QUẢ NHẬN DIỆN FONT</h2>
-    <p id="resultsEmpty">Chưa có kết quả. Tải ảnh lên; có thể khoanh vùng hoặc để hệ thống phân tích toàn ảnh.</p>
-    <div id="results"></div>
-  </div>
+  </section>
 
 </div>
 
-
+<footer>
+  Mã nguồn mở: chỉnh mảng <code>FONTS</code> để đổi font tầng 2 mặc định, hoặc các hằng số <code>LOCAL_CONFIDENCE</code>, <code>WEIGHT_PIXEL</code>/<code>WEIGHT_ASPECT</code>/<code>WEIGHT_DENSITY</code>/<code>WEIGHT_EDGE</code> trong file để đổi ngưỡng và tỷ trọng so khớp.
+</footer>
 
 <script>
 (function(){
@@ -445,24 +314,42 @@
     {n:'Sacramento', c:'Viết tay'}, {n:'Caveat', c:'Viết tay'}, {n:'Shadows Into Light', c:'Viết tay'}, {n:'Kalam', c:'Viết tay'},
     {n:'Roboto Mono', c:'Mono'}, {n:'Source Code Pro', c:'Mono'}, {n:'JetBrains Mono', c:'Mono'}, {n:'Space Mono', c:'Mono'}
   ];
+
   var GRID = 36;
   var MAX_DISPLAY_W = 480;
-
-  var state = { img:null, scale:1, selection:null, localFaces:[], googleFonts:null, publicFonts:[], viewZoom:1 };
-  var activeJob = null;
-  var LOCAL_SUPPORTED = ('queryLocalFonts' in window);
   var LOCAL_CONFIDENCE = 0.55;
+  var WEIGHT_PIXEL = 0.55, WEIGHT_ASPECT = 0.15, WEIGHT_DENSITY = 0.12, WEIGHT_EDGE = 0.18;
+  var LOCAL_SUPPORTED = ('queryLocalFonts' in window);
+  var ZOOM_MIN = 1, ZOOM_MAX = 6, ZOOM_STEP = 0.5;
+
+  var state = { img:null, scale:1, selection:null, localFaces:[] };
+  var matchControl = { cancelled:false, paused:false };
+  var dynamicGoogleFonts = null;
+  var dbFonts = [];
+  var zoomLevel = 1;
+  var mode = 'select';
+  var dragging = false, startX = 0, startY = 0;
+  var localFamilyCounter = 0;
 
   var dropzone = document.getElementById('dropzone');
   var fileInput = document.getElementById('fileInput');
-  var cropStep = document.getElementById('cropStep');
-  var runStep = document.getElementById('runStep');
+  var cropCard = document.getElementById('cropCard');
+  var runCard = document.getElementById('runCard');
   var imgCanvas = document.getElementById('imgCanvas');
   var overlayCanvas = document.getElementById('overlayCanvas');
+  var canvasViewport = document.getElementById('canvasViewport');
   var clearSelBtn = document.getElementById('clearSelBtn');
+  var zoomInBtn = document.getElementById('zoomInBtn');
+  var zoomOutBtn = document.getElementById('zoomOutBtn');
+  var zoomResetBtn = document.getElementById('zoomResetBtn');
+  var zoomPct = document.getElementById('zoomPct');
+  var modeToggleBtn = document.getElementById('modeToggleBtn');
   var sampleInput = document.getElementById('sampleInput');
   var previewInput = document.getElementById('previewInput');
   var runBtn = document.getElementById('runBtn');
+  var matchControlsRow = document.getElementById('matchControlsRow');
+  var pauseBtn = document.getElementById('pauseBtn');
+  var cancelBtn = document.getElementById('cancelBtn');
   var statusEl = document.getElementById('statusEl');
   var resultsEl = document.getElementById('results');
   var resultsEmpty = document.getElementById('resultsEmpty');
@@ -470,27 +357,17 @@
   var localTierNote = document.getElementById('localTierNote');
   var localScanRow = document.getElementById('localScanRow');
   var scanLocalBtn = document.getElementById('scanLocalBtn');
+  var localLimitInput = document.getElementById('localLimitInput');
   var localStatusEl = document.getElementById('localStatus');
-  var googleApiKeyInput = document.getElementById('googleApiKey');
-  var loadGoogleBtn = document.getElementById('loadGoogleBtn');
-  var googleStatusEl = document.getElementById('googleStatus');
-  var googleTierNote = document.getElementById('googleTierNote');
-  var canvasStage = document.getElementById('canvasStage');
-  var zoomInBtn = document.getElementById('zoomInBtn');
-  var zoomOutBtn = document.getElementById('zoomOutBtn');
-  var zoomResetBtn = document.getElementById('zoomResetBtn');
-  var zoomLabel = document.getElementById('zoomLabel');
-  var pauseBtn = document.getElementById('pauseBtn');
-  var cancelBtn = document.getElementById('cancelBtn');
-  var loadPublicFontsBtn = document.getElementById('loadPublicFontsBtn');
-  var publicFontsStatus = document.getElementById('publicFontsStatus');
+  var googleApiKeyInput = document.getElementById('googleApiKeyInput');
+  var loadFullCatalogBtn = document.getElementById('loadFullCatalogBtn');
+  var googleCatalogStatus = document.getElementById('googleCatalogStatus');
+  var loadDbBtn = document.getElementById('loadDbBtn');
+  var dbStatus = document.getElementById('dbStatus');
 
   function buildLibraryList(){
     var byCat = {};
-    FONTS.forEach(function(f){
-      byCat[f.c] = byCat[f.c] || [];
-      byCat[f.c].push(f.n);
-    });
+    FONTS.forEach(function(f){ byCat[f.c] = byCat[f.c] || []; byCat[f.c].push(f.n); });
     Object.keys(byCat).forEach(function(cat){
       var div = document.createElement('div');
       div.innerHTML = '<b>' + cat + ':</b> ' + byCat[cat].join(', ');
@@ -499,15 +376,19 @@
   }
   buildLibraryList();
 
-  // ---------- tier 1: fonts installed on this computer ----------
-  if(LOCAL_SUPPORTED){
-    localTierNote.textContent = 'Trình duyệt này hỗ trợ quét font cài trên máy (sẽ xin quyền truy cập khi bạn bấm nút).';
-    localScanRow.hidden = false;
-  } else {
-    localTierNote.textContent = 'Thiết bị/trình duyệt này chưa hỗ trợ quét font cài trên máy (hiện chỉ có trên Chrome hoặc Edge, bản máy tính). Công cụ sẽ dùng thẳng tầng 2 — Google Fonts.';
+  function showStatus(msg, kind){
+    statusEl.textContent = msg || '';
+    statusEl.setAttribute('data-kind', kind || 'error');
   }
 
-  var localFamilyCounter = 0;
+  // ===================== Tier 1: fonts installed on this computer =====================
+  if(LOCAL_SUPPORTED){
+    localTierNote.textContent = 'Trình duyệt này hỗ trợ quét font cài trên máy (sẽ xin quyền khi bạn bấm nút).';
+    localScanRow.hidden = false;
+  } else {
+    localTierNote.textContent = 'Thiết bị/trình duyệt này chưa hỗ trợ quét font cài trên máy (hiện chỉ có trên Chrome hoặc Edge, bản máy tính). Công cụ sẽ dùng các tầng sau.';
+  }
+
   function addLocalFontFace(fontData){
     return fontData.blob().then(function(blob){ return blob.arrayBuffer(); })
       .then(function(buf){
@@ -524,63 +405,225 @@
 
   function scanLocalFonts(){
     if(!LOCAL_SUPPORTED) return;
+    var limit = Math.max(1, parseInt(localLimitInput.value, 10) || 3000);
     scanLocalBtn.disabled = true;
-    localStatusEl.textContent = 'Đang xin quyền truy cập toàn bộ font trên máy…';
+    localStatusEl.textContent = 'Đang xin quyền truy cập font trên máy…';
     window.queryLocalFonts().then(function(fonts){
+      if(fonts.length > limit) fonts = fonts.slice(0, limit);
       state.localFaces = [];
       var total = fonts.length, idx = 0;
       function step(){
-        var end = Math.min(idx+10, total);
+        var end = Math.min(idx+30, total);
         var tasks = [];
         for(; idx<end; idx++){ tasks.push(addLocalFontFace(fonts[idx])); }
         return Promise.all(tasks).then(function(){
-          localStatusEl.textContent = 'Đang nạp font trên máy: ' + idx.toLocaleString('vi-VN') + '/' + total.toLocaleString('vi-VN');
+          localStatusEl.textContent = 'Đang nạp font trên máy: ' + idx + '/' + total;
           if(idx<total) return new Promise(function(r){ setTimeout(r,0); }).then(step);
         });
       }
-      return step().then(function(){ return total; });
-    }).then(function(total){
-      localStatusEl.textContent = 'Đã đọc ' + total.toLocaleString('vi-VN') + ' face font; nạp thành công ' + state.localFaces.length.toLocaleString('vi-VN') + '. Không áp dụng giới hạn số lượng.';
+      return step();
+    }).then(function(){
+      localStatusEl.textContent = 'Đã nạp ' + state.localFaces.length + ' font từ máy tính — sẵn sàng so khớp ở tầng 1.';
     }).catch(function(err){
       console.error(err);
-      localStatusEl.textContent = err && err.name === 'NotAllowedError'
-        ? 'Bạn chưa cấp quyền truy cập font. Hãy cho phép quyền Local fonts rồi quét lại.'
-        : 'Không truy cập được font trên máy. Hãy dùng Chrome/Edge máy tính, HTTPS và thử cấp quyền lại.';
+      localStatusEl.textContent = 'Không truy cập được font trên máy (có thể bạn đã từ chối quyền truy cập).';
     }).finally(function(){
       scanLocalBtn.disabled = false;
     });
   }
   if(scanLocalBtn) scanLocalBtn.addEventListener('click', scanLocalFonts);
 
-  function showStatus(msg, kind){
-    statusEl.textContent = msg || '';
-    statusEl.setAttribute('data-kind', kind || 'error');
+  // ===================== Tier 2: Google Fonts (default 48, or full catalog via API key) =====================
+  function mapGoogleCategory(cat){
+    switch(cat){
+      case 'serif': return 'Serif';
+      case 'display': return 'Slab/Display';
+      case 'handwriting': return 'Viết tay';
+      case 'monospace': return 'Mono';
+      default: return 'Sans';
+    }
+  }
+  function chunkArray(arr, size){
+    var out = [];
+    for(var i=0;i<arr.length;i+=size){ out.push(arr.slice(i, i+size)); }
+    return out;
+  }
+  function injectGoogleStylesheets(families, onProgress){
+    var groups = chunkArray(families, 80);
+    var p = Promise.resolve();
+    groups.forEach(function(group, i){
+      p = p.then(function(){
+        return new Promise(function(resolve){
+          var href = 'https://fonts.googleapis.com/css2?' + group.map(function(f){
+            return 'family=' + encodeURIComponent(f).replace(/%20/g, '+');
+          }).join('&') + '&display=swap';
+          var link = document.createElement('link');
+          link.rel = 'stylesheet'; link.href = href;
+          link.onload = resolve; link.onerror = resolve;
+          document.head.appendChild(link);
+        }).then(function(){ if(onProgress) onProgress(i+1, groups.length); });
+      });
+    });
+    return p;
+  }
+  function loadFullGoogleCatalog(){
+    var apiKey = googleApiKeyInput.value.trim();
+    if(!apiKey){ googleCatalogStatus.textContent = 'Vui lòng dán API key trước.'; return; }
+    loadFullCatalogBtn.disabled = true;
+    googleCatalogStatus.textContent = 'Đang lấy danh sách font từ Google…';
+    var url = 'https://www.googleapis.com/webfonts/v1/webfonts?key=' + encodeURIComponent(apiKey) + '&sort=alpha';
+    fetch(url).then(function(res){
+      if(!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    }).then(function(data){
+      if(!data.items || !data.items.length) throw new Error('empty');
+      var list = data.items.map(function(it){ return { n: it.family, c: mapGoogleCategory(it.category) }; });
+      googleCatalogStatus.textContent = 'Đang tải stylesheet cho ' + list.length + ' font…';
+      return injectGoogleStylesheets(list.map(function(f){ return f.n; }), function(done, total){
+        googleCatalogStatus.textContent = 'Đang tải stylesheet: nhóm ' + done + '/' + total;
+      }).then(function(){
+        dynamicGoogleFonts = list;
+        googleCatalogStatus.textContent = 'Đã nạp toàn bộ ' + list.length + ' font Google Fonts. Lần so khớp tới sẽ dùng danh sách này (có thể lâu hơn).';
+      });
+    }).catch(function(err){
+      console.error(err);
+      googleCatalogStatus.textContent = 'Không nạp được danh sách đầy đủ (key sai, hết quota, hoặc mất mạng). Vẫn dùng 48 font mặc định.';
+    }).finally(function(){
+      loadFullCatalogBtn.disabled = false;
+    });
+  }
+  loadFullCatalogBtn.addEventListener('click', loadFullGoogleCatalog);
+
+  function loadFontsChunked(families, sampleChar, onProgress){
+    var size = 60;
+    var p = Promise.resolve();
+    for(var i=0; i<families.length; i+=size){
+      (function(i){
+        p = p.then(function(){
+          if(matchControl.cancelled) return;
+          var batch = families.slice(i, i+size);
+          return Promise.all(batch.map(function(fam){
+            try{ return document.fonts.load('48px "' + fam + '"', sampleChar)['catch'](function(){}); }
+            catch(e){ return Promise.resolve(); }
+          })).then(function(){
+            if(onProgress) onProgress(Math.min(i+size, families.length), families.length);
+          });
+        });
+      })(i);
+    }
+    return p.then(function(){
+      return document.fonts.ready['catch'](function(){});
+    });
   }
 
-  // ---------- image loading ----------
+  // ===================== Tier 3: bundled/local font database =====================
+  function addDbFontFace(entry, index){
+    return fetch(entry.url).then(function(res){
+      if(!res.ok) throw new Error('404');
+      return res.arrayBuffer();
+    }).then(function(buf){
+      var famId = 'dbfont' + index;
+      var face = new FontFace(famId, buf);
+      return face.load();
+    }).then(function(loaded){
+      document.fonts.add(loaded);
+      dbFonts.push({ family: loaded.family, label: entry.label || famId });
+    }).catch(function(){ /* bỏ qua font lỗi trong manifest */ });
+  }
+  function loadFontDatabase(){
+    loadDbBtn.disabled = true;
+    dbStatus.textContent = 'Đang tìm fonts-db/manifest.json…';
+    fetch('fonts-db/manifest.json').then(function(res){
+      if(!res.ok) throw new Error('not found');
+      return res.json();
+    }).then(function(list){
+      if(!Array.isArray(list) || !list.length) throw new Error('empty');
+      dbFonts = [];
+      var total = list.length;
+      var p = Promise.resolve();
+      for(var i=0; i<total; i+=20){
+        (function(i){
+          var batch = list.slice(i, i+20);
+          p = p.then(function(){
+            return Promise.all(batch.map(function(entry, j){ return addDbFontFace(entry, i+j); }));
+          }).then(function(){
+            dbStatus.textContent = 'Đang nạp: ' + Math.min(i+20, total) + '/' + total;
+          });
+        })(i);
+      }
+      return p.then(function(){
+        dbStatus.textContent = 'Đã nạp ' + dbFonts.length + ' font từ kho dữ liệu mở rộng.';
+      });
+    }).catch(function(){
+      dbStatus.textContent = 'Chưa có (hoặc không đọc được) fonts-db/manifest.json trong thư mục này.';
+    }).finally(function(){
+      loadDbBtn.disabled = false;
+    });
+  }
+  loadDbBtn.addEventListener('click', loadFontDatabase);
+
+  // ===================== image loading, zoom, pan =====================
+  function computeBaseScale(img){ return Math.min(1, MAX_DISPLAY_W / img.naturalWidth); }
+
+  function redrawSelectionOverlay(){
+    var ctx = overlayCanvas.getContext('2d');
+    ctx.clearRect(0,0,overlayCanvas.width, overlayCanvas.height);
+    if(state.selection){
+      var s = state.selection, sc = state.scale;
+      strokeRect(s.x*sc, s.y*sc, (s.x+s.w)*sc, (s.y+s.h)*sc);
+    }
+  }
+  function renderCanvasAtZoom(){
+    var img = state.img; if(!img) return;
+    var baseScale = computeBaseScale(img);
+    var scale = baseScale * zoomLevel;
+    state.scale = scale;
+    var dispW = Math.max(1, Math.round(img.naturalWidth*scale));
+    var dispH = Math.max(1, Math.round(img.naturalHeight*scale));
+    imgCanvas.width = dispW; imgCanvas.height = dispH;
+    overlayCanvas.width = dispW; overlayCanvas.height = dispH;
+    imgCanvas.getContext('2d').drawImage(img, 0, 0, dispW, dispH);
+    zoomPct.textContent = Math.round(zoomLevel*100) + '%';
+    redrawSelectionOverlay();
+  }
+  function setZoom(z){
+    zoomLevel = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, z));
+    renderCanvasAtZoom();
+  }
+  zoomInBtn.addEventListener('click', function(){ setZoom(zoomLevel + ZOOM_STEP); });
+  zoomOutBtn.addEventListener('click', function(){ setZoom(zoomLevel - ZOOM_STEP); });
+  zoomResetBtn.addEventListener('click', function(){ setZoom(1); });
+
+  function setMode(m){
+    mode = m;
+    if(m === 'pan'){
+      overlayCanvas.style.pointerEvents = 'none';
+      canvasViewport.classList.add('is-pan');
+      modeToggleBtn.textContent = 'Chế độ: Di chuyển';
+    } else {
+      overlayCanvas.style.pointerEvents = 'auto';
+      canvasViewport.classList.remove('is-pan');
+      modeToggleBtn.textContent = 'Chế độ: Khoanh vùng';
+    }
+  }
+  modeToggleBtn.addEventListener('click', function(){ setMode(mode === 'select' ? 'pan' : 'select'); });
+
   function loadImageFile(file){
     if(!file || file.type.indexOf('image/') !== 0) return;
     var url = URL.createObjectURL(file);
     var img = new Image();
     img.onload = function(){
       state.img = img;
-      var scale = Math.min(1, MAX_DISPLAY_W / img.naturalWidth);
-      var dispW = Math.max(1, Math.round(img.naturalWidth * scale));
-      var dispH = Math.max(1, Math.round(img.naturalHeight * scale));
-      state.scale = dispW / img.naturalWidth;
-      state.viewZoom = 1;
-      imgCanvas.width = dispW; imgCanvas.height = dispH;
-      overlayCanvas.width = dispW; overlayCanvas.height = dispH;
-      imgCanvas.getContext('2d').drawImage(img, 0, 0, dispW, dispH);
-      updateZoom();
-      cropStep.hidden = false;
-      runStep.hidden = false;
+      zoomLevel = 1;
+      setMode('select');
+      cropCard.hidden = false;
+      runCard.hidden = false;
       clearSelection();
-      runBtn.disabled = false;
-      showStatus('Ảnh đã sẵn sàng. Có thể phóng to để khoanh vùng, hoặc tìm font trên toàn ảnh.', 'info');
+      renderCanvasAtZoom();
+      showStatus('Đã tải ảnh. Phóng to nếu cần rồi khoanh vùng một ký tự.', 'info');
       URL.revokeObjectURL(url);
     };
-    img.onerror = function(){ URL.revokeObjectURL(url); showStatus('Không đọc được ảnh này, vui lòng thử ảnh khác.'); };
+    img.onerror = function(){ showStatus('Không đọc được ảnh này, vui lòng thử ảnh khác.'); };
     img.src = url;
   }
 
@@ -608,35 +651,14 @@
     }
   });
 
-  function updateZoom(){
-    if(!state.img) return;
-    var w = Math.round(imgCanvas.width * state.viewZoom);
-    var h = Math.round(imgCanvas.height * state.viewZoom);
-    canvasStage.style.width = w + 'px';
-    canvasStage.style.height = h + 'px';
-    imgCanvas.style.width = w + 'px'; imgCanvas.style.height = h + 'px';
-    overlayCanvas.style.width = w + 'px'; overlayCanvas.style.height = h + 'px';
-    zoomLabel.textContent = Math.round(state.viewZoom*100) + '%';
-  }
-  function changeZoom(factor){
-    if(!state.img) return;
-    state.viewZoom = Math.max(0.5, Math.min(5, state.viewZoom*factor));
-    updateZoom();
-  }
-  zoomInBtn.addEventListener('click', function(){ changeZoom(1.25); });
-  zoomOutBtn.addEventListener('click', function(){ changeZoom(0.8); });
-  zoomResetBtn.addEventListener('click', function(){ state.viewZoom=1; updateZoom(); });
-
-  // ---------- crop selection ----------
-  var dragging = false, startX = 0, startY = 0;
-
-  function toLocal(e){
+  // ===================== crop selection (select mode only — pan mode disables pointer events here) =====================
+  function toLocalDisplay(e){
     var r = overlayCanvas.getBoundingClientRect();
     var x = (e.clientX - r.left) * (overlayCanvas.width / r.width);
     var y = (e.clientY - r.top) * (overlayCanvas.height / r.height);
     return {x:x, y:y};
   }
-  function drawBox(x1,y1,x2,y2){
+  function strokeRect(x1,y1,x2,y2){
     var ctx = overlayCanvas.getContext('2d');
     ctx.clearRect(0,0,overlayCanvas.width, overlayCanvas.height);
     var x = Math.min(x1,x2), y = Math.min(y1,y2);
@@ -645,31 +667,31 @@
     ctx.strokeStyle = '#AC3426';
     ctx.lineWidth = 2;
     ctx.setLineDash([6,4]);
-    ctx.strokeRect(x+1,y+1,w-2,h-2);
+    ctx.strokeRect(x+1,y+1,Math.max(0,w-2),Math.max(0,h-2));
     ctx.restore();
   }
   function clearSelection(){
     state.selection = null;
     overlayCanvas.getContext('2d').clearRect(0,0,overlayCanvas.width, overlayCanvas.height);
-    runBtn.disabled = !state.img;
+    runBtn.disabled = true;
   }
   clearSelBtn.addEventListener('click', clearSelection);
 
   overlayCanvas.addEventListener('pointerdown', function(e){
     dragging = true;
-    var p = toLocal(e);
+    var p = toLocalDisplay(e);
     startX = p.x; startY = p.y;
     try{ overlayCanvas.setPointerCapture(e.pointerId); }catch(err){}
   });
   overlayCanvas.addEventListener('pointermove', function(e){
     if(!dragging) return;
-    var p = toLocal(e);
-    drawBox(startX, startY, p.x, p.y);
+    var p = toLocalDisplay(e);
+    strokeRect(startX, startY, p.x, p.y);
   });
   overlayCanvas.addEventListener('pointerup', function(e){
     if(!dragging) return;
     dragging = false;
-    var p = toLocal(e);
+    var p = toLocalDisplay(e);
     var x = Math.max(0, Math.min(startX, p.x));
     var y = Math.max(0, Math.min(startY, p.y));
     var w = Math.abs(p.x - startX);
@@ -679,22 +701,20 @@
       clearSelection();
       return;
     }
-    state.selection = {x:x,y:y,w:w,h:h};
-    drawBox(x,y,x+w,y+h);
+    var sc = state.scale;
+    state.selection = { x:x/sc, y:y/sc, w:w/sc, h:h/sc };
+    redrawSelectionOverlay();
     runBtn.disabled = false;
-    runBtn.disabled = false;
-    showStatus('Đã chọn vùng ảnh. Có thể bắt đầu nhận diện.', 'info');
+    showStatus('Đã chọn vùng. Nhập ký tự mẫu rồi bấm tìm font.', 'info');
   });
 
   function getCroppedSourceCanvas(){
-    if(!state.img) throw new Error('Chưa có ảnh');
-    var sel = state.selection || {x:0,y:0,w:imgCanvas.width,h:imgCanvas.height};
-    var s = state.scale;
-    var ox = sel.x / s, oy = sel.y / s, ow = sel.w / s, oh = sel.h / s;
+    var sel = state.selection;
+    var ox = sel.x, oy = sel.y, ow = sel.w, oh = sel.h;
     var maxDim = 480;
     var outW = ow, outH = oh;
     var longest = Math.max(outW, outH);
-    if(longest > maxDim){ var k = maxDim / longest; outW *= k; outH *= k; }
+    if(longest > maxDim){ var k = maxDim/longest; outW *= k; outH *= k; }
     var c = document.createElement('canvas');
     c.width = Math.max(1, Math.round(outW));
     c.height = Math.max(1, Math.round(outH));
@@ -702,13 +722,11 @@
     return c;
   }
 
-  // ---------- shape feature extraction ----------
+  // ===================== multi-feature shape comparison (classical CV, not a trained model) =====================
   function toGrayscale(imgData){
     var d = imgData.data, w = imgData.width, h = imgData.height;
     var gray = new Float32Array(w*h);
-    for(var i=0;i<w*h;i++){
-      gray[i] = 0.299*d[i*4] + 0.587*d[i*4+1] + 0.114*d[i*4+2];
-    }
+    for(var i=0;i<w*h;i++){ gray[i] = 0.299*d[i*4] + 0.587*d[i*4+1] + 0.114*d[i*4+2]; }
     return gray;
   }
   function estimateBg(gray, w, h){
@@ -717,7 +735,7 @@
     for(var y=0;y<h;y++){ sum+=gray[y*w]; sum+=gray[y*w+w-1]; n+=2; }
     return n>0 ? sum/n : 255;
   }
-  function toFeatureGrid(srcCanvas, grid){
+  function computeFeatureBundle(srcCanvas, grid){
     var w = srcCanvas.width, h = srcCanvas.height;
     var ctx = srcCanvas.getContext('2d');
     var imgData = ctx.getImageData(0,0,w,h);
@@ -773,15 +791,45 @@
     fctx.drawImage(diffCanvas, 0,0,bw,bh, offX,offY, drawW, drawH);
 
     var outData = fctx.getImageData(0,0,grid,grid).data;
-    var feat = new Float32Array(grid*grid);
-    for(var k=0;k<grid*grid;k++){ feat[k] = outData[k*4]/255; }
-    return feat;
+    var featGrid = new Float32Array(grid*grid);
+    var sum = 0;
+    for(var k=0;k<grid*grid;k++){ var vv = outData[k*4]/255; featGrid[k]=vv; sum+=vv; }
+    var density = sum/(grid*grid);
+    var aspect = bw/bh;
+
+    var BINS = 8;
+    var hist = new Float32Array(BINS);
+    for(var y2=1;y2<grid-1;y2++){
+      for(var x2=1;x2<grid-1;x2++){
+        var gx = featGrid[y2*grid+(x2+1)] - featGrid[y2*grid+(x2-1)];
+        var gy = featGrid[(y2+1)*grid+x2] - featGrid[(y2-1)*grid+x2];
+        var mag = Math.sqrt(gx*gx+gy*gy);
+        if(mag < 0.02) continue;
+        var ang = Math.atan2(gy,gx);
+        if(ang<0) ang += Math.PI;
+        var bin = Math.min(BINS-1, Math.floor((ang/Math.PI)*BINS));
+        hist[bin] += mag;
+      }
+    }
+    var hsum=0; for(var b=0;b<BINS;b++) hsum+=hist[b];
+    if(hsum>0){ for(var b2=0;b2<BINS;b2++) hist[b2]/=hsum; }
+
+    return { grid:featGrid, aspect:aspect, density:density, edgeHist:hist };
   }
   function cosineSim(a,b){
     var dot=0, na=0, nb=0;
     for(var i=0;i<a.length;i++){ dot += a[i]*b[i]; na += a[i]*a[i]; nb += b[i]*b[i]; }
     if(na===0 || nb===0) return 0;
     return dot / (Math.sqrt(na)*Math.sqrt(nb));
+  }
+  function compareBundles(t,c){
+    var pixelScore = cosineSim(t.grid, c.grid);
+    var arDiff = Math.abs(t.aspect - c.aspect) / Math.max(t.aspect, c.aspect, 0.001);
+    var arScore = Math.max(0, 1 - arDiff);
+    var densDiff = Math.abs(t.density - c.density);
+    var densScore = Math.max(0, 1 - densDiff*2.2);
+    var edgeScore = cosineSim(t.edgeHist, c.edgeHist);
+    return WEIGHT_PIXEL*pixelScore + WEIGHT_ASPECT*arScore + WEIGHT_DENSITY*densScore + WEIGHT_EDGE*edgeScore;
   }
   function renderGlyphCanvas(fontFamily, text){
     var c = document.createElement('canvas');
@@ -800,7 +848,7 @@
     return c;
   }
 
-  // ---------- results rendering ----------
+  // ===================== results rendering =====================
   function escapeHtml(s){
     return String(s).replace(/[&<>"']/g, function(ch){
       return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[ch];
@@ -841,190 +889,70 @@
     }
   });
 
-  // ---------- run matching ----------
-  function setLoading(isLoading){
-    runBtn.disabled = isLoading || !state.img;
-    pauseBtn.disabled = !isLoading;
-    cancelBtn.disabled = !isLoading;
-    if(isLoading){ runBtn.innerHTML = '<span class="spinner"></span>Đang xử lý…'; }
-    else { runBtn.textContent = 'BẮT ĐẦU TÌM FONT'; pauseBtn.textContent='Tạm dừng'; }
-  }
-
-  function waitForJob(job){
-    if(job.cancelled) return Promise.reject(new Error('Đã hủy lượt tìm font.'));
-    if(!job.paused) return Promise.resolve();
-    return new Promise(function(resolve,reject){ job.waiters.push({resolve:resolve,reject:reject}); });
-  }
-  function resumeJob(job){
-    job.paused=false;
-    var waiters=job.waiters.splice(0);
-    waiters.forEach(function(w){w.resolve();});
-    pauseBtn.textContent='Tạm dừng';
-    showStatus('Đã tiếp tục quá trình tìm font…','info');
-  }
-  pauseBtn.addEventListener('click',function(){
-    if(!activeJob) return;
-    if(activeJob.paused){ resumeJob(activeJob); }
-    else { activeJob.paused=true; pauseBtn.textContent='Tiếp tục'; showStatus('Đã tạm dừng. Bấm “Tiếp tục” để chạy tiếp hoặc “Hủy” để dừng hẳn.','info'); }
-  });
-  cancelBtn.addEventListener('click',function(){
-    if(!activeJob) return;
-    activeJob.cancelled=true; activeJob.paused=false;
-    activeJob.waiters.splice(0).forEach(function(w){w.resolve();});
-    showStatus('Đang hủy lượt tìm font…','info');
-  });
-
-  function scoreCandidatesAsync(list, sampleChar, targetFeat, onProgress, job){
-    return new Promise(function(resolve,reject){
-      var results = [], idx = 0, total = list.length;
+  // ===================== matching orchestration (pause / cancel / cascading tiers) =====================
+  function scoreCandidatesAsync(list, sampleChar, targetBundle, onProgress){
+    return new Promise(function(resolve){
+      var results = [];
+      var idx = 0, total = list.length;
       function step(){
-        waitForJob(job).then(function(){
-          if(job.cancelled) throw new Error('Đã hủy lượt tìm font.');
-          var end = Math.min(idx+35, total);
-          for(; idx<end; idx++){
-            if(job.cancelled) throw new Error('Đã hủy lượt tìm font.');
-            var f = list[idx];
-            try{
-              var glyphCanvas = renderGlyphCanvas(f.family, sampleChar);
-              var feat = toFeatureGrid(glyphCanvas, GRID);
-              results.push({ name:f.label, cat:f.cat, score:cosineSim(targetFeat, feat) });
-            }catch(fontErr){}
-          }
-          if(onProgress) onProgress(idx, total);
-          if(idx<total) setTimeout(step, 0); else resolve(results);
-        }).catch(reject);
+        if(matchControl.cancelled){ resolve({cancelled:true, results:results}); return; }
+        if(matchControl.paused){ setTimeout(step, 150); return; }
+        var end = Math.min(idx+120, total);
+        for(; idx<end; idx++){
+          if(matchControl.cancelled) break;
+          var f = list[idx];
+          var glyphCanvas = renderGlyphCanvas(f.family, sampleChar);
+          var bundle = computeFeatureBundle(glyphCanvas, GRID);
+          results.push({ name:f.label, cat:f.cat, score: compareBundles(targetBundle, bundle) });
+        }
+        if(onProgress) onProgress(idx, total);
+        if(matchControl.cancelled){ resolve({cancelled:true, results:results}); }
+        else if(idx<total){ setTimeout(step, 0); }
+        else { resolve({cancelled:false, results:results}); }
       }
       step();
     });
   }
 
-
-  function loadGoogleCatalog(){
-    var key = googleApiKeyInput.value.trim();
-    if(!key){
-      googleStatusEl.textContent = 'Cần Google Fonts API key để lấy danh mục đầy đủ. Hãy tạo key và giới hạn key theo HTTP referrer của website.';
-      return Promise.resolve(false);
-    }
-    loadGoogleBtn.disabled = true;
-    googleStatusEl.textContent = 'Đang lấy danh mục font từ Google Fonts…';
-    var url = 'https://www.googleapis.com/webfonts/v1/webfonts?sort=alpha&key=' + encodeURIComponent(key);
-    return fetch(url).then(function(response){
-      if(!response.ok) throw new Error('Google Fonts API trả về HTTP ' + response.status);
-      return response.json();
-    }).then(function(data){
-      if(!data.items || !data.items.length) throw new Error('Google không trả về danh sách font.');
-      state.googleFonts = data.items.map(function(item){
-        return {n:item.family, c:item.category || 'Google Fonts', variants:item.variants || []};
-      });
-      googleTierNote.textContent = 'Đã tải toàn bộ ' + state.googleFonts.length.toLocaleString('vi-VN') + ' họ font mà Google Fonts API trả về. Các họ font sẽ được nạp theo lô khi tìm kiếm.';
-      googleStatusEl.textContent = 'Tải thành công ' + state.googleFonts.length.toLocaleString('vi-VN') + ' họ font.';
-      libGroups.textContent = 'Danh mục đầy đủ đã sẵn sàng; không hiển thị toàn bộ tên để tránh làm nặng trang.';
-      return true;
-    }).catch(function(err){
-      console.error(err);
-      googleStatusEl.textContent = 'Không tải được danh mục: ' + err.message + '. Kiểm tra API key, giới hạn API và kết nối mạng.';
-      return false;
-    }).finally(function(){ loadGoogleBtn.disabled = false; });
-  }
-  if(loadGoogleBtn) loadGoogleBtn.addEventListener('click', loadGoogleCatalog);
-
-  function loadPublicFontCatalog(){
-    loadPublicFontsBtn.disabled=true;
-    publicFontsStatus.textContent='Đang tải danh mục font công khai từ Fontsource…';
-    return fetch('https://api.fontsource.org/v1/fonts').then(function(r){
-      if(!r.ok) throw new Error('HTTP '+r.status);
-      return r.json();
-    }).then(function(data){
-      if(!Array.isArray(data)) throw new Error('Dữ liệu danh mục không đúng định dạng');
-      state.publicFonts=data;
-      publicFontsStatus.textContent='Đã nạp '+data.length.toLocaleString('vi-VN')+' mục font/metadata công khai. Đây là kho danh mục; để nhận diện bằng mô hình AI cần tiếp tục tải/chuẩn hóa font và lập chỉ mục vector.';
-      return data;
-    }).catch(function(err){
-      publicFontsStatus.textContent='Chưa tải được kho dữ liệu: '+err.message+'. Kiểm tra kết nối hoặc API nguồn.';
-      return [];
-    }).finally(function(){loadPublicFontsBtn.disabled=false;});
-  }
-  if(loadPublicFontsBtn) loadPublicFontsBtn.addEventListener('click',loadPublicFontCatalog);
-
-  function loadGoogleStyles(fonts, sampleChar, job){
-    var chunks = [];
-    for(var i=0;i<fonts.length;i+=25) chunks.push(fonts.slice(i,i+25));
-    var chain = Promise.resolve();
-    chunks.forEach(function(chunk, index){
-      chain = chain.then(function(){
-        return waitForJob(job).then(function(){
-        if(job.cancelled) throw new Error('Đã hủy lượt tìm font.');
-        var params = chunk.map(function(f){ return 'family=' + encodeURIComponent(f.n); }).join('&');
-        var link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = 'https://fonts.googleapis.com/css2?' + params + '&display=swap';
-        document.head.appendChild(link);
-        return new Promise(function(resolve){
-          var settled = false;
-          var done = function(){ if(!settled){ settled=true; resolve(); } };
-          link.onload = done;
-          link.onerror = done;
-          setTimeout(done, 12000);
-        });
-        });
+  function runGoogleTier(sampleChar, targetBundle, previewText, prefix){
+    var sourceList = dynamicGoogleFonts || FONTS;
+    showStatus(prefix + 'Đang tải font Google (tầng 2, ' + sourceList.length + ' font)…', 'info');
+    return loadFontsChunked(sourceList.map(function(f){ return f.n; }), sampleChar, function(done,total){
+      showStatus(prefix + 'Đang tải font Google: ' + done + '/' + total, 'info');
+    }).then(function(){
+      if(matchControl.cancelled){ showStatus('Đã hủy.', 'info'); return; }
+      var glist = sourceList.map(function(f){ return {family:f.n, label:f.n, cat:f.c}; });
+      return scoreCandidatesAsync(glist, sampleChar, targetBundle, function(done,total){
+        showStatus(prefix + 'Đang so khớp Google Fonts: ' + done + '/' + total, 'info');
+      }).then(function(out){
+        if(out.cancelled){ showStatus('Đã hủy.', 'info'); return; }
+        out.results.sort(function(a,b){ return b.score - a.score; });
+        renderResults(out.results.slice(0,10), previewText);
+        showStatus(prefix + 'Đã so khớp với ' + sourceList.length + ' font Google Fonts (tầng 2).', 'info');
       });
     });
-    return chain.then(function(){
-      var index = 0;
-      function loadBatch(){
-        return waitForJob(job).then(function(){
-        if(job.cancelled) throw new Error('Đã hủy lượt tìm font.');
-        var batch = fonts.slice(index, index+20);
-        index += batch.length;
-        return Promise.all(batch.map(function(font){
-          try{ return document.fonts.load('48px "' + font.n.replace(/"/g, '') + '"', sampleChar).catch(function(){}); }
-          catch(err){ return Promise.resolve(); }
-        })).then(function(){
-          if(index < fonts.length) return new Promise(function(resolve){ setTimeout(resolve, 0); }).then(loadBatch);
-        });
-        });
-      }
-      return loadBatch().then(function(){ return document.fonts.ready; });
-    });
   }
 
-  function runGoogleTier(sampleChar, targetFeat, previewText, prefix, job){
-    if(!state.googleFonts || !state.googleFonts.length) return Promise.reject(new Error('Chưa tải danh mục đầy đủ Google Fonts. Hãy nhập API key rồi bấm “Tải danh mục Google”.'));
-    var sourceFonts = state.googleFonts;
-    var glist = sourceFonts.map(function(f){ return {family:f.n, label:f.n, cat:f.c || 'Google Fonts'}; });
-    showStatus(prefix + 'Đang tải ' + glist.length.toLocaleString('vi-VN') + ' font Google Fonts…', 'info');
-    var loadPromise = loadGoogleStyles(sourceFonts, sampleChar, job);
-    return loadPromise.then(function(){
-      return scoreCandidatesAsync(glist, sampleChar, targetFeat, function(done,total){
-        showStatus(prefix + 'Đang so khớp Google Fonts: ' + done.toLocaleString('vi-VN') + '/' + total.toLocaleString('vi-VN'), 'info');
-      }, job);
-    }).then(function(results){
-      results.sort(function(a,b){ return b.score - a.score; });
-      renderResults(results.slice(0,30), previewText);
-      showStatus(prefix + 'Đã so khớp ' + glist.length.toLocaleString('vi-VN') + ' họ font Google Fonts.', 'info');
-    });
+  function buildTierList(){
+    var tiers = [];
+    if(state.localFaces.length) tiers.push({ name:'tầng 1 (font trên máy)', list: state.localFaces.map(function(lf){ return {family:lf.family,label:lf.label,cat:'Trên máy'}; }) });
+    if(dbFonts.length) tiers.push({ name:'tầng 3 (kho dữ liệu mở rộng)', list: dbFonts.map(function(f){ return {family:f.family,label:f.label,cat:'Kho mở rộng'}; }) });
+    return tiers;
   }
 
-  function showGoogleFallbackLink(sampleChar, targetFeat, previewText, job){
-    var old = document.getElementById('forceGoogleBtn');
+  function showMoreTiersLink(sampleChar, targetBundle, previewText, fromIndex){
+    var old = document.getElementById('forceMoreBtn');
     if(old) old.remove();
     var btn = document.createElement('button');
     btn.type = 'button';
-    btn.id = 'forceGoogleBtn';
+    btn.id = 'forceMoreBtn';
     btn.className = 'btn-ghost';
     btn.style.marginTop = '10px';
-    btn.textContent = 'Không ưng ý? So thêm với Google Fonts (tầng 2)';
+    btn.textContent = 'Không ưng ý? So thêm với các tầng tiếp theo';
     btn.addEventListener('click', function(){
-      if(activeJob) return;
-      var nextJob={paused:false,cancelled:false,waiters:[]};
-      activeJob=nextJob;
       btn.disabled = true;
       setLoading(true);
-      runGoogleTier(sampleChar, targetFeat, previewText, '', nextJob).catch(function(err){
-        if(nextJob.cancelled) showStatus('Đã hủy lượt tìm font.','info');
-        else showStatus(err && err.message ? err.message : 'Không thể tra cứu Google Fonts.');
-      }).finally(function(){
-        if(activeJob===nextJob) activeJob=null;
+      runCascadeFrom(sampleChar, targetBundle, previewText, fromIndex).finally(function(){
         setLoading(false);
         btn.remove();
       });
@@ -1032,48 +960,82 @@
     resultsEl.insertAdjacentElement('afterend', btn);
   }
 
+  function runCascadeFrom(sampleChar, targetBundle, previewText, startIndex){
+    var tiers = buildTierList();
+    var i = startIndex;
+    function next(){
+      if(i >= tiers.length){
+        return runGoogleTier(sampleChar, targetBundle, previewText, tiers.length ? 'Không thấy font đủ giống ở các tầng trước. ' : '');
+      }
+      var tier = tiers[i];
+      showStatus('Đang so khớp ' + tier.name + ' (' + tier.list.length + ' font)…', 'info');
+      return scoreCandidatesAsync(tier.list, sampleChar, targetBundle, function(done,total){
+        showStatus('Đang so khớp ' + tier.name + ': ' + done + '/' + total, 'info');
+      }).then(function(out){
+        if(out.cancelled){ showStatus('Đã hủy.', 'info'); return; }
+        out.results.sort(function(a,b){ return b.score - a.score; });
+        var best = out.results.length ? out.results[0].score : 0;
+        if(best >= LOCAL_CONFIDENCE){
+          renderResults(out.results.slice(0,10), previewText);
+          showStatus('Đã tìm thấy ở ' + tier.name + '.', 'info');
+          showMoreTiersLink(sampleChar, targetBundle, previewText, i+1);
+          return;
+        }
+        i++;
+        return next();
+      });
+    }
+    return next();
+  }
+
+  function setLoading(isLoading){
+    runBtn.disabled = isLoading || !state.selection;
+    matchControlsRow.hidden = !isLoading;
+    if(isLoading){
+      matchControl.cancelled = false; matchControl.paused = false;
+      pauseBtn.textContent = 'Tạm dừng';
+      runBtn.innerHTML = '<span class="spinner"></span>Đang so khớp…';
+    } else {
+      runBtn.textContent = 'Tìm font tương tự';
+    }
+  }
+  pauseBtn.addEventListener('click', function(){
+    matchControl.paused = !matchControl.paused;
+    pauseBtn.textContent = matchControl.paused ? 'Tiếp tục' : 'Tạm dừng';
+    showStatus(matchControl.paused ? 'Đã tạm dừng so khớp.' : 'Đang tiếp tục so khớp…', 'info');
+  });
+  cancelBtn.addEventListener('click', function(){
+    matchControl.cancelled = true;
+    matchControl.paused = false;
+    showStatus('Đang hủy…', 'info');
+  });
+
   function runMatch(){
-    if(!state.img){ showStatus('Vui lòng tải ảnh lên trước.'); return; }
-    if(activeJob) return;
-    var oldBtn = document.getElementById('forceGoogleBtn');
+    if(!state.selection){
+      showStatus('Vui lòng khoanh vùng chứa một ký tự trên ảnh trước.');
+      return;
+    }
+    var oldBtn = document.getElementById('forceMoreBtn');
     if(oldBtn) oldBtn.remove();
-    var job={paused:false,cancelled:false,waiters:[]};
-    activeJob=job;
     var sampleChar = sampleInput.value.trim() || 'A';
     var previewText = previewInput.value.trim() || sampleChar;
     setLoading(true);
     var cropCanvas;
-    try{ cropCanvas=getCroppedSourceCanvas(); }
-    catch(err){ setLoading(false); activeJob=null; showStatus('Không đọc được ảnh, vui lòng tải ảnh khác.'); return; }
-    var targetFeat=toFeatureGrid(cropCanvas,GRID);
-    var localList=state.localFaces.map(function(lf){return {family:lf.family,label:lf.label,cat:'Trên máy'};});
-    var finalPromise;
-    if(localList.length){
-      showStatus('Đang phân tích '+localList.length.toLocaleString('vi-VN')+' font trên máy (tầng 1)…','info');
-      finalPromise=scoreCandidatesAsync(localList,sampleChar,targetFeat,function(done,total){showStatus('Đang xử lý font trên máy: '+done.toLocaleString('vi-VN')+'/'+total.toLocaleString('vi-VN'),'info');},job).then(function(results){
-        if(job.cancelled) throw new Error('Đã hủy lượt tìm font.');
-        results.sort(function(a,b){return b.score-a.score;});
-        var best=results.length?results[0].score:0;
-        if(best>=LOCAL_CONFIDENCE){
-          renderResults(results.slice(0,30),previewText);
-          showStatus('Đã có kết quả từ font trên máy. Có thể tiếp tục tra cứu Google Fonts.','info');
-          showGoogleFallbackLink(sampleChar,targetFeat,previewText,job);
-        } else return runGoogleTier(sampleChar,targetFeat,previewText,'Không tìm thấy kết quả phù hợp trong font máy. ',job);
-      });
-    } else if(state.googleFonts && state.googleFonts.length) finalPromise=runGoogleTier(sampleChar,targetFeat,previewText,'',job);
-    else if(googleApiKeyInput.value.trim()) finalPromise=loadGoogleCatalog().then(function(ok){if(!ok) throw new Error('Không tải được danh mục Google Fonts.'); return runGoogleTier(sampleChar,targetFeat,previewText,'',job);});
-    else finalPromise=Promise.reject(new Error('Để tìm trên toàn bộ Google Fonts, cần nhập API key và tải danh mục đầy đủ trước. Không dùng danh sách 48 font mẫu thay thế.')); 
-    finalPromise.catch(function(err){
-      if(job.cancelled || (err && /hủy/.test(err.message))) showStatus('Đã hủy lượt tìm font. Bạn có thể chỉnh ảnh rồi bắt đầu lại.','info');
-      else {console.error(err);showStatus(err && err.message ? err.message : 'Có lỗi khi xử lý dữ liệu font. Vui lòng thử lại.');}
-    }).finally(function(){
-      if(activeJob===job) activeJob=null;
+    try{
+      cropCanvas = getCroppedSourceCanvas();
+    }catch(err){
       setLoading(false);
-      if(job.cancelled) showStatus('Đã hủy lượt tìm font.','info');
+      showStatus('Không đọc được vùng ảnh đã chọn, vui lòng thử lại.');
+      return;
+    }
+    var targetBundle = computeFeatureBundle(cropCanvas, GRID);
+    runCascadeFrom(sampleChar, targetBundle, previewText, 0).catch(function(err){
+      console.error(err);
+      showStatus('Có lỗi khi so khớp font, vui lòng thử lại.');
+    }).finally(function(){
+      setLoading(false);
     });
   }
-
-
   runBtn.addEventListener('click', runMatch);
   sampleInput.addEventListener('keydown', function(e){ if(e.key==='Enter') runMatch(); });
   previewInput.addEventListener('keydown', function(e){ if(e.key==='Enter') runMatch(); });
