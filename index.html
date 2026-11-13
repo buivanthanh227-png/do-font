@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
-<title>Dò Font — nhận diện font chữ từ ảnh</title>
+<title>Tự động tìm font chữ</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='78' font-size='78'%3E%F0%9F%94%8E%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -250,16 +250,59 @@
     font-size:12px; color:var(--ink-soft);
   }
   footer code{ font-family:var(--mono); background:var(--paper-deep); padding:1px 4px; border-radius:2px; }
+
+  .creator-credit{margin-left:auto;text-align:right;font-family:var(--mono);font-size:11px;line-height:1.55;font-weight:700;letter-spacing:.6px;color:var(--stamp);align-self:flex-end}
+  .topbar-inner{max-width:1500px;align-items:flex-end}
+  .logo{font-size:clamp(30px,4vw,48px)}
+  .app-shell{max-width:1500px}
+  .canvas-card{overflow:auto;max-height:460px;margin-left:36px;border:1px solid var(--line);background:#eee}
+  .canvas-stage{width:max-content;max-width:none;overflow:hidden;border:0}
+  #imgCanvas{width:100%;height:100%}
+  #overlayCanvas{width:100%;height:100%}
+  .zoom-toolbar{margin:0 0 8px 36px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  #zoomLabel{font:12px var(--mono);min-width:48px;text-align:center}
+  .selection-hint{font-size:12px;color:var(--ink-soft);align-self:center}
+  .job-controls{margin:8px 0 0 36px;display:flex;gap:8px;flex-wrap:wrap}
+  .job-controls button{min-width:92px}
+  .source-tiers{grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch}
+  .tier{min-width:0}
+  .tier span{display:block}
+  .tier .scan-row span{display:inline;font-size:12px}
+  @media(min-width:1050px){
+    .app-shell{display:grid;grid-template-columns:minmax(0,1.85fr) minmax(340px,1fr);gap:22px;align-items:start}
+    .panel-left{position:static;min-width:0}
+    .panel-left .ticket{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:start}
+    .panel-left .step{min-width:0;border-bottom:2px dashed var(--line);border-right:1px dashed var(--line);padding:14px 12px}
+    .panel-left .step:nth-child(3){border-right:0}
+    .panel-left .step-note,.panel-left .dropzone,.panel-left .canvas-card,.panel-left .row,.panel-left .fields,.panel-left .btn-primary,.panel-left .status,.panel-left .zoom-toolbar,.panel-left .job-controls{margin-left:0}
+    .panel-left .fields{grid-template-columns:1fr;gap:8px}
+    .panel-left .canvas-card{max-height:390px}
+    .panel-left .library{grid-column:1/-1;margin-top:0}
+    .panel-right{position:sticky;top:14px;max-height:calc(100vh - 28px);overflow:auto;padding-right:4px}
+    .panel-right h2{margin-top:0}
+  }
+  @media(max-width:1049px){
+    .app-shell{display:block}
+    .panel-right{margin-top:24px}
+  }
+  @media(max-width:650px){
+    .topbar-inner{align-items:flex-start;flex-direction:column}
+    .creator-credit{margin-left:0;text-align:left;align-self:flex-start}
+    .source-tiers{grid-template-columns:1fr}
+    .app-shell{padding:14px 10px 40px}
+    .step{padding:14px 10px}
+    .canvas-card,.dropzone,.step-note,.row,.fields,.btn-primary,.status,.zoom-toolbar,.job-controls{margin-left:0}
+  }
+
 </style>
 </head>
 <body>
 
 <header class="topbar">
   <div class="topbar-inner">
-    <h1 class="logo">Dò Font</h1>
-    <span class="badge">BETA</span>
+    <h1 class="logo">TỰ ĐỘNG TÌM FONT CHỮ</h1>
+    <div class="creator-credit">CÔNG CỤ ĐƯỢC PHÁT TRIỂN TỪ Ý TƯỞNG<br>CỦA BÙI VĂN THANH</div>
   </div>
-  <p class="tagline">So khớp hình dạng ký tự trong ảnh với thư viện Google Fonts để tìm font gần giống nhất. Chạy thẳng trên trình duyệt, dùng tốt trên điện thoại, máy tính bảng và máy tính — phù hợp cho việc tra font khi thiết kế in thùng carton.</p>
 </header>
 
 <div class="app-shell">
@@ -284,22 +327,29 @@
           <span class="step-num">02</span>
           <h2 class="step-title">Khoanh vùng ký tự</h2>
         </div>
-        <p class="step-note">Kéo để khoanh đúng một ký tự (hoặc một đoạn chữ ngắn) bạn muốn nhận diện.</p>
+        <p class="step-note">Có thể khoanh vùng chữ để tăng độ chính xác. Không khoanh cũng được: hệ thống sẽ phân tích toàn bộ ảnh.</p>
+        <div class="zoom-toolbar">
+          <button type="button" class="btn-ghost" id="zoomOutBtn" aria-label="Thu nhỏ ảnh">−</button>
+          <span id="zoomLabel">100%</span>
+          <button type="button" class="btn-ghost" id="zoomInBtn" aria-label="Phóng to ảnh">+</button>
+          <button type="button" class="btn-ghost" id="zoomResetBtn">Vừa khung</button>
+        </div>
         <div class="canvas-card">
-          <div class="canvas-stage">
+          <div class="canvas-stage" id="canvasStage">
             <canvas id="imgCanvas"></canvas>
             <canvas id="overlayCanvas"></canvas>
           </div>
         </div>
         <div class="row">
           <button type="button" class="btn-ghost" id="clearSelBtn">Bỏ vùng chọn</button>
+          <span class="selection-hint">Cuộn hoặc kéo ảnh khi phóng to để tìm đúng dòng chữ.</span>
         </div>
       </div>
 
       <div class="step" id="runStep" hidden>
         <div class="step-head">
           <span class="step-num">03</span>
-          <h2 class="step-title">Nhập ký tự mẫu &amp; chạy so khớp</h2>
+          <h2 class="step-title">Thông tin nhận diện</h2>
         </div>
         <div class="fields">
           <div>
@@ -311,45 +361,54 @@
             <input type="text" id="previewInput" maxlength="40" value="HÀNG DỄ VỠ" autocomplete="off">
           </div>
         </div>
-        <button type="button" class="btn-primary" id="runBtn" disabled>Tìm font tương tự</button>
-        <p class="status" id="statusEl"></p>
+        <button type="button" class="btn-primary" id="runBtn" disabled>BẮT ĐẦU TÌM FONT</button>
+        <div class="job-controls">
+          <button type="button" class="btn-ghost" id="pauseBtn" disabled>Tạm dừng</button>
+          <button type="button" class="btn-ghost" id="cancelBtn" disabled>Hủy</button>
+        </div>
+        <p class="status" id="statusEl" aria-live="polite"></p>
       </div>
 
       <details class="library" open>
-        <summary>Nguồn dữ liệu font (4 tầng)</summary>
+        <summary>4 tầng dữ liệu font độc lập</summary>
         <div class="source-tiers">
           <div class="tier">
             <b>1. Font cài trên máy tính</b>
             <span id="localTierNote">Đang kiểm tra trình duyệt…</span>
             <div class="scan-row" id="localScanRow" hidden>
-              <button type="button" class="btn-ghost" id="scanLocalBtn">Quét toàn bộ font máy</button>
-              <span style="font-size:12.5px;color:var(--ink-soft);">Không đặt giới hạn số lượng.</span>
+              <button type="button" class="btn-ghost" id="scanLocalBtn">Quét font trên máy</button>
+              <span>Không đặt giới hạn số lượng do ứng dụng.</span>
             </div>
             <p class="local-status" id="localStatus"></p>
           </div>
           <div class="tier">
-            <b>2. Google Fonts — mở rộng toàn bộ danh mục</b>
-            <span id="googleTierNote">Có 48 font mẫu tích hợp sẵn. Để tải danh mục Google Fonts đầy đủ, nhập API key miễn phí của Google Fonts Developer API.</span>
+            <b>2. Toàn bộ Google Fonts</b>
+            <span id="googleTierNote">Tải danh mục các họ font Google đang cung cấp qua Developer API.</span>
             <div class="scan-row">
-              <input type="text" id="googleApiKey" placeholder="Dán Google Fonts API key (không bắt buộc)" autocomplete="off" spellcheck="false" style="flex:1;min-width:180px;">
-              <button type="button" class="btn-ghost" id="loadGoogleBtn">Tải danh mục đầy đủ</button>
+              <input type="text" id="googleApiKey" placeholder="Google Fonts API key" autocomplete="off" spellcheck="false" style="flex:1;min-width:150px;">
+              <button type="button" class="btn-ghost" id="loadGoogleBtn">Tải danh mục Google</button>
             </div>
             <p class="local-status" id="googleStatus" aria-live="polite"></p>
             <div class="lib-groups" id="libGroups"></div>
           </div>
           <div class="tier">
-            <b>3–4. Kho font mã nguồn mở lớn &amp; các trang nhận diện font khác</b>
-            <span>Trình duyệt không thể tự quét các kho font hoặc trang web khác vì giới hạn bảo mật (CORS) và vì đây là trang tĩnh, không có máy chủ riêng để truy vấn giúp bạn. Đây là lối tắt mở nhanh vài công cụ có cơ sở dữ liệu lớn hơn, để tải lại ảnh lên so tiếp khi cần:</span>
+            <b>3. Kho dữ liệu font công khai</b>
+            <span>Tra cứu danh mục font công khai độc lập từ Fontsource; đây là lớp dữ liệu để xây dựng thư viện font lớn, có metadata về họ font, kiểu chữ, trọng lượng và bộ ký tự.</span>
+            <div class="scan-row"><button type="button" class="btn-ghost" id="loadPublicFontsBtn">Nạp kho font công khai</button></div>
+            <p class="local-status" id="publicFontsStatus" aria-live="polite"></p>
+          </div>
+          <div class="tier">
+            <b>4. Tìm kiếm trên các website font</b>
+            <span>Lớp tìm kiếm web riêng: truy vấn trang phân phối font, kho font và công cụ nhận diện; cần dịch vụ máy chủ để tìm kiếm, lấy dữ liệu và kiểm tra nguồn/giấy phép.</span>
             <div class="manual-links">
               <a href="https://www.myfonts.com/pages/whatthefont" target="_blank" rel="noopener">WhatTheFont</a>
               <a href="https://www.fontspring.com/matcherator" target="_blank" rel="noopener">Fontspring Matcherator</a>
               <a href="https://www.whatfontis.com/" target="_blank" rel="noopener">WhatFontIs</a>
-              <a href="https://fonts.google.com/" target="_blank" rel="noopener">Google Fonts</a>
-              <a href="https://github.com/google/fonts" target="_blank" rel="noopener">Google Fonts GitHub</a>
               <a href="https://www.fontsquirrel.com/" target="_blank" rel="noopener">Font Squirrel</a>
               <a href="https://www.fontshare.com/" target="_blank" rel="noopener">Fontshare</a>
               <a href="https://open-foundry.com/" target="_blank" rel="noopener">Open Foundry</a>
             </div>
+            <p class="local-status">Tự động tìm và đối chiếu dữ liệu nhiều website sẽ được nối với AI/backend ở giai đoạn hoàn thiện.</p>
           </div>
         </div>
       </details>
@@ -358,16 +417,14 @@
   </div>
 
   <div class="panel-right">
-    <h2>Kết quả: 30 font gần giống nhất</h2>
-    <p id="resultsEmpty">Chưa có kết quả. Tải ảnh lên, khoanh vùng một ký tự rồi bấm “Tìm font tương tự”.</p>
+    <h2>KẾT QUẢ NHẬN DIỆN FONT</h2>
+    <p id="resultsEmpty">Chưa có kết quả. Tải ảnh lên; có thể khoanh vùng hoặc để hệ thống phân tích toàn ảnh.</p>
     <div id="results"></div>
   </div>
 
 </div>
 
-<footer>
-  Phép so khớp dựa trên hình dạng điểm ảnh (xấp xỉ), không phải AI nhận diện font chuyên dụng. Kết quả là mức tương đồng tham khảo; ảnh nghiêng, méo phối cảnh, chữ bị biến dạng hoặc chỉ có một phần ký tự sẽ làm giảm độ chính xác. Việc quét font máy cần Chrome/Edge máy tính và quyền truy cập của người dùng.
-</footer>
+
 
 <script>
 (function(){
@@ -391,7 +448,8 @@
   var GRID = 36;
   var MAX_DISPLAY_W = 480;
 
-  var state = { img:null, scale:1, selection:null, localFaces:[], googleFonts:null };
+  var state = { img:null, scale:1, selection:null, localFaces:[], googleFonts:null, publicFonts:[], viewZoom:1 };
+  var activeJob = null;
   var LOCAL_SUPPORTED = ('queryLocalFonts' in window);
   var LOCAL_CONFIDENCE = 0.55;
 
@@ -417,6 +475,15 @@
   var loadGoogleBtn = document.getElementById('loadGoogleBtn');
   var googleStatusEl = document.getElementById('googleStatus');
   var googleTierNote = document.getElementById('googleTierNote');
+  var canvasStage = document.getElementById('canvasStage');
+  var zoomInBtn = document.getElementById('zoomInBtn');
+  var zoomOutBtn = document.getElementById('zoomOutBtn');
+  var zoomResetBtn = document.getElementById('zoomResetBtn');
+  var zoomLabel = document.getElementById('zoomLabel');
+  var pauseBtn = document.getElementById('pauseBtn');
+  var cancelBtn = document.getElementById('cancelBtn');
+  var loadPublicFontsBtn = document.getElementById('loadPublicFontsBtn');
+  var publicFontsStatus = document.getElementById('publicFontsStatus');
 
   function buildLibraryList(){
     var byCat = {};
@@ -501,13 +568,16 @@
       var dispW = Math.max(1, Math.round(img.naturalWidth * scale));
       var dispH = Math.max(1, Math.round(img.naturalHeight * scale));
       state.scale = dispW / img.naturalWidth;
+      state.viewZoom = 1;
       imgCanvas.width = dispW; imgCanvas.height = dispH;
       overlayCanvas.width = dispW; overlayCanvas.height = dispH;
       imgCanvas.getContext('2d').drawImage(img, 0, 0, dispW, dispH);
+      updateZoom();
       cropStep.hidden = false;
       runStep.hidden = false;
       clearSelection();
-      showStatus('Đã tải ảnh. Khoanh vùng một ký tự bên trên.', 'info');
+      runBtn.disabled = false;
+      showStatus('Ảnh đã sẵn sàng. Có thể phóng to để khoanh vùng, hoặc tìm font trên toàn ảnh.', 'info');
       URL.revokeObjectURL(url);
     };
     img.onerror = function(){ URL.revokeObjectURL(url); showStatus('Không đọc được ảnh này, vui lòng thử ảnh khác.'); };
@@ -538,6 +608,25 @@
     }
   });
 
+  function updateZoom(){
+    if(!state.img) return;
+    var w = Math.round(imgCanvas.width * state.viewZoom);
+    var h = Math.round(imgCanvas.height * state.viewZoom);
+    canvasStage.style.width = w + 'px';
+    canvasStage.style.height = h + 'px';
+    imgCanvas.style.width = w + 'px'; imgCanvas.style.height = h + 'px';
+    overlayCanvas.style.width = w + 'px'; overlayCanvas.style.height = h + 'px';
+    zoomLabel.textContent = Math.round(state.viewZoom*100) + '%';
+  }
+  function changeZoom(factor){
+    if(!state.img) return;
+    state.viewZoom = Math.max(0.5, Math.min(5, state.viewZoom*factor));
+    updateZoom();
+  }
+  zoomInBtn.addEventListener('click', function(){ changeZoom(1.25); });
+  zoomOutBtn.addEventListener('click', function(){ changeZoom(0.8); });
+  zoomResetBtn.addEventListener('click', function(){ state.viewZoom=1; updateZoom(); });
+
   // ---------- crop selection ----------
   var dragging = false, startX = 0, startY = 0;
 
@@ -562,7 +651,7 @@
   function clearSelection(){
     state.selection = null;
     overlayCanvas.getContext('2d').clearRect(0,0,overlayCanvas.width, overlayCanvas.height);
-    runBtn.disabled = true;
+    runBtn.disabled = !state.img;
   }
   clearSelBtn.addEventListener('click', clearSelection);
 
@@ -593,11 +682,13 @@
     state.selection = {x:x,y:y,w:w,h:h};
     drawBox(x,y,x+w,y+h);
     runBtn.disabled = false;
-    showStatus('Đã chọn vùng. Nhập ký tự mẫu rồi bấm tìm font.', 'info');
+    runBtn.disabled = false;
+    showStatus('Đã chọn vùng ảnh. Có thể bắt đầu nhận diện.', 'info');
   });
 
   function getCroppedSourceCanvas(){
-    var sel = state.selection;
+    if(!state.img) throw new Error('Chưa có ảnh');
+    var sel = state.selection || {x:0,y:0,w:imgCanvas.width,h:imgCanvas.height};
     var s = state.scale;
     var ox = sel.x / s, oy = sel.y / s, ow = sel.w / s, oh = sel.h / s;
     var maxDim = 480;
@@ -752,41 +843,66 @@
 
   // ---------- run matching ----------
   function setLoading(isLoading){
-    runBtn.disabled = isLoading || !state.selection;
-    if(isLoading){
-      runBtn.innerHTML = '<span class="spinner"></span>Đang so khớp…';
-    } else {
-      runBtn.textContent = 'Tìm font tương tự';
-    }
+    runBtn.disabled = isLoading || !state.img;
+    pauseBtn.disabled = !isLoading;
+    cancelBtn.disabled = !isLoading;
+    if(isLoading){ runBtn.innerHTML = '<span class="spinner"></span>Đang xử lý…'; }
+    else { runBtn.textContent = 'BẮT ĐẦU TÌM FONT'; pauseBtn.textContent='Tạm dừng'; }
   }
 
-  function scoreCandidatesAsync(list, sampleChar, targetFeat, onProgress){
-    return new Promise(function(resolve){
-      var results = [];
-      var idx = 0, total = list.length;
+  function waitForJob(job){
+    if(job.cancelled) return Promise.reject(new Error('Đã hủy lượt tìm font.'));
+    if(!job.paused) return Promise.resolve();
+    return new Promise(function(resolve,reject){ job.waiters.push({resolve:resolve,reject:reject}); });
+  }
+  function resumeJob(job){
+    job.paused=false;
+    var waiters=job.waiters.splice(0);
+    waiters.forEach(function(w){w.resolve();});
+    pauseBtn.textContent='Tạm dừng';
+    showStatus('Đã tiếp tục quá trình tìm font…','info');
+  }
+  pauseBtn.addEventListener('click',function(){
+    if(!activeJob) return;
+    if(activeJob.paused){ resumeJob(activeJob); }
+    else { activeJob.paused=true; pauseBtn.textContent='Tiếp tục'; showStatus('Đã tạm dừng. Bấm “Tiếp tục” để chạy tiếp hoặc “Hủy” để dừng hẳn.','info'); }
+  });
+  cancelBtn.addEventListener('click',function(){
+    if(!activeJob) return;
+    activeJob.cancelled=true; activeJob.paused=false;
+    activeJob.waiters.splice(0).forEach(function(w){w.resolve();});
+    showStatus('Đang hủy lượt tìm font…','info');
+  });
+
+  function scoreCandidatesAsync(list, sampleChar, targetFeat, onProgress, job){
+    return new Promise(function(resolve,reject){
+      var results = [], idx = 0, total = list.length;
       function step(){
-        var end = Math.min(idx+35, total);
-        for(; idx<end; idx++){
-          var f = list[idx];
-          try{
-            var glyphCanvas = renderGlyphCanvas(f.family, sampleChar);
-            var feat = toFeatureGrid(glyphCanvas, GRID);
-            results.push({ name:f.label, cat:f.cat, score:cosineSim(targetFeat, feat) });
-          }catch(fontErr){
-            // Bỏ qua riêng font lỗi; không để một font làm hỏng cả lượt dò.
+        waitForJob(job).then(function(){
+          if(job.cancelled) throw new Error('Đã hủy lượt tìm font.');
+          var end = Math.min(idx+35, total);
+          for(; idx<end; idx++){
+            if(job.cancelled) throw new Error('Đã hủy lượt tìm font.');
+            var f = list[idx];
+            try{
+              var glyphCanvas = renderGlyphCanvas(f.family, sampleChar);
+              var feat = toFeatureGrid(glyphCanvas, GRID);
+              results.push({ name:f.label, cat:f.cat, score:cosineSim(targetFeat, feat) });
+            }catch(fontErr){}
           }
-        }
-        if(onProgress) onProgress(idx, total);
-        if(idx<total){ setTimeout(step, 0); } else { resolve(results); }
+          if(onProgress) onProgress(idx, total);
+          if(idx<total) setTimeout(step, 0); else resolve(results);
+        }).catch(reject);
       }
       step();
     });
   }
 
+
   function loadGoogleCatalog(){
     var key = googleApiKeyInput.value.trim();
     if(!key){
-      googleStatusEl.textContent = 'Cần API key để lấy danh mục động đầy đủ. Có thể tiếp tục dùng 48 font mẫu tích hợp sẵn.';
+      googleStatusEl.textContent = 'Cần Google Fonts API key để lấy danh mục đầy đủ. Hãy tạo key và giới hạn key theo HTTP referrer của website.';
       return Promise.resolve(false);
     }
     loadGoogleBtn.disabled = true;
@@ -800,7 +916,7 @@
       state.googleFonts = data.items.map(function(item){
         return {n:item.family, c:item.category || 'Google Fonts', variants:item.variants || []};
       });
-      googleTierNote.textContent = 'Đã tải ' + state.googleFonts.length.toLocaleString('vi-VN') + ' họ font từ danh mục Google Fonts. Toàn bộ danh sách sẽ được đưa vào lượt so khớp.';
+      googleTierNote.textContent = 'Đã tải toàn bộ ' + state.googleFonts.length.toLocaleString('vi-VN') + ' họ font mà Google Fonts API trả về. Các họ font sẽ được nạp theo lô khi tìm kiếm.';
       googleStatusEl.textContent = 'Tải thành công ' + state.googleFonts.length.toLocaleString('vi-VN') + ' họ font.';
       libGroups.textContent = 'Danh mục đầy đủ đã sẵn sàng; không hiển thị toàn bộ tên để tránh làm nặng trang.';
       return true;
@@ -812,12 +928,32 @@
   }
   if(loadGoogleBtn) loadGoogleBtn.addEventListener('click', loadGoogleCatalog);
 
-  function loadGoogleStyles(fonts, sampleChar){
+  function loadPublicFontCatalog(){
+    loadPublicFontsBtn.disabled=true;
+    publicFontsStatus.textContent='Đang tải danh mục font công khai từ Fontsource…';
+    return fetch('https://api.fontsource.org/v1/fonts').then(function(r){
+      if(!r.ok) throw new Error('HTTP '+r.status);
+      return r.json();
+    }).then(function(data){
+      if(!Array.isArray(data)) throw new Error('Dữ liệu danh mục không đúng định dạng');
+      state.publicFonts=data;
+      publicFontsStatus.textContent='Đã nạp '+data.length.toLocaleString('vi-VN')+' mục font/metadata công khai. Đây là kho danh mục; để nhận diện bằng mô hình AI cần tiếp tục tải/chuẩn hóa font và lập chỉ mục vector.';
+      return data;
+    }).catch(function(err){
+      publicFontsStatus.textContent='Chưa tải được kho dữ liệu: '+err.message+'. Kiểm tra kết nối hoặc API nguồn.';
+      return [];
+    }).finally(function(){loadPublicFontsBtn.disabled=false;});
+  }
+  if(loadPublicFontsBtn) loadPublicFontsBtn.addEventListener('click',loadPublicFontCatalog);
+
+  function loadGoogleStyles(fonts, sampleChar, job){
     var chunks = [];
     for(var i=0;i<fonts.length;i+=25) chunks.push(fonts.slice(i,i+25));
     var chain = Promise.resolve();
     chunks.forEach(function(chunk, index){
       chain = chain.then(function(){
+        return waitForJob(job).then(function(){
+        if(job.cancelled) throw new Error('Đã hủy lượt tìm font.');
         var params = chunk.map(function(f){ return 'family=' + encodeURIComponent(f.n); }).join('&');
         var link = document.createElement('link');
         link.rel = 'stylesheet';
@@ -830,11 +966,14 @@
           link.onerror = done;
           setTimeout(done, 12000);
         });
+        });
       });
     });
     return chain.then(function(){
       var index = 0;
       function loadBatch(){
+        return waitForJob(job).then(function(){
+        if(job.cancelled) throw new Error('Đã hủy lượt tìm font.');
         var batch = fonts.slice(index, index+20);
         index += batch.length;
         return Promise.all(batch.map(function(font){
@@ -843,25 +982,22 @@
         })).then(function(){
           if(index < fonts.length) return new Promise(function(resolve){ setTimeout(resolve, 0); }).then(loadBatch);
         });
+        });
       }
       return loadBatch().then(function(){ return document.fonts.ready; });
     });
   }
 
-  function runGoogleTier(sampleChar, targetFeat, previewText, prefix){
-    var sourceFonts = state.googleFonts || FONTS.map(function(f){ return {n:f.n, c:f.c}; });
+  function runGoogleTier(sampleChar, targetFeat, previewText, prefix, job){
+    if(!state.googleFonts || !state.googleFonts.length) return Promise.reject(new Error('Chưa tải danh mục đầy đủ Google Fonts. Hãy nhập API key rồi bấm “Tải danh mục Google”.'));
+    var sourceFonts = state.googleFonts;
     var glist = sourceFonts.map(function(f){ return {family:f.n, label:f.n, cat:f.c || 'Google Fonts'}; });
     showStatus(prefix + 'Đang tải ' + glist.length.toLocaleString('vi-VN') + ' font Google Fonts…', 'info');
-    var loadPromise = state.googleFonts
-      ? loadGoogleStyles(sourceFonts, sampleChar)
-      : Promise.all(FONTS.map(function(f){
-          try{ return document.fonts.load('48px "' + f.n + '"', sampleChar).catch(function(){}); }
-          catch(err){ return Promise.resolve(); }
-        })).then(function(){ return document.fonts.ready; });
+    var loadPromise = loadGoogleStyles(sourceFonts, sampleChar, job);
     return loadPromise.then(function(){
       return scoreCandidatesAsync(glist, sampleChar, targetFeat, function(done,total){
         showStatus(prefix + 'Đang so khớp Google Fonts: ' + done.toLocaleString('vi-VN') + '/' + total.toLocaleString('vi-VN'), 'info');
-      });
+      }, job);
     }).then(function(results){
       results.sort(function(a,b){ return b.score - a.score; });
       renderResults(results.slice(0,30), previewText);
@@ -869,7 +1005,7 @@
     });
   }
 
-  function showGoogleFallbackLink(sampleChar, targetFeat, previewText){
+  function showGoogleFallbackLink(sampleChar, targetFeat, previewText, job){
     var old = document.getElementById('forceGoogleBtn');
     if(old) old.remove();
     var btn = document.createElement('button');
@@ -879,62 +1015,64 @@
     btn.style.marginTop = '10px';
     btn.textContent = 'Không ưng ý? So thêm với Google Fonts (tầng 2)';
     btn.addEventListener('click', function(){
+      if(activeJob) return;
+      var nextJob={paused:false,cancelled:false,waiters:[]};
+      activeJob=nextJob;
       btn.disabled = true;
-      runGoogleTier(sampleChar, targetFeat, previewText, '').finally(function(){ btn.remove(); });
+      setLoading(true);
+      runGoogleTier(sampleChar, targetFeat, previewText, '', nextJob).catch(function(err){
+        if(nextJob.cancelled) showStatus('Đã hủy lượt tìm font.','info');
+        else showStatus(err && err.message ? err.message : 'Không thể tra cứu Google Fonts.');
+      }).finally(function(){
+        if(activeJob===nextJob) activeJob=null;
+        setLoading(false);
+        btn.remove();
+      });
     });
     resultsEl.insertAdjacentElement('afterend', btn);
   }
 
   function runMatch(){
-    if(!state.selection){
-      showStatus('Vui lòng khoanh vùng chứa một ký tự trên ảnh trước.');
-      return;
-    }
+    if(!state.img){ showStatus('Vui lòng tải ảnh lên trước.'); return; }
+    if(activeJob) return;
     var oldBtn = document.getElementById('forceGoogleBtn');
     if(oldBtn) oldBtn.remove();
-
+    var job={paused:false,cancelled:false,waiters:[]};
+    activeJob=job;
     var sampleChar = sampleInput.value.trim() || 'A';
     var previewText = previewInput.value.trim() || sampleChar;
     setLoading(true);
-
     var cropCanvas;
-    try{
-      cropCanvas = getCroppedSourceCanvas();
-    }catch(err){
-      setLoading(false);
-      showStatus('Không đọc được vùng ảnh đã chọn, vui lòng thử lại.');
-      return;
-    }
-    var targetFeat = toFeatureGrid(cropCanvas, GRID);
-    var localList = state.localFaces.map(function(lf){ return {family:lf.family, label:lf.label, cat:'Trên máy'}; });
-
+    try{ cropCanvas=getCroppedSourceCanvas(); }
+    catch(err){ setLoading(false); activeJob=null; showStatus('Không đọc được ảnh, vui lòng tải ảnh khác.'); return; }
+    var targetFeat=toFeatureGrid(cropCanvas,GRID);
+    var localList=state.localFaces.map(function(lf){return {family:lf.family,label:lf.label,cat:'Trên máy'};});
     var finalPromise;
     if(localList.length){
-      showStatus('Đang so khớp với ' + localList.length + ' font trên máy (tầng 1)…', 'info');
-      finalPromise = scoreCandidatesAsync(localList, sampleChar, targetFeat, function(done,total){
-        showStatus('Đang so khớp font trên máy: ' + done + '/' + total, 'info');
-      }).then(function(results){
-        results.sort(function(a,b){ return b.score - a.score; });
-        var best = results.length ? results[0].score : 0;
-        if(best >= LOCAL_CONFIDENCE){
-          renderResults(results.slice(0,30), previewText);
-          showStatus('Đã tìm thấy kết quả trong font máy (tầng 1). Bạn vẫn có thể bấm nút bên dưới để dò thêm Google Fonts.', 'info');
-          showGoogleFallbackLink(sampleChar, targetFeat, previewText);
-        } else {
-          return runGoogleTier(sampleChar, targetFeat, previewText, 'Không thấy font đủ giống trong máy bạn (tầng 1). ');
-        }
+      showStatus('Đang phân tích '+localList.length.toLocaleString('vi-VN')+' font trên máy (tầng 1)…','info');
+      finalPromise=scoreCandidatesAsync(localList,sampleChar,targetFeat,function(done,total){showStatus('Đang xử lý font trên máy: '+done.toLocaleString('vi-VN')+'/'+total.toLocaleString('vi-VN'),'info');},job).then(function(results){
+        if(job.cancelled) throw new Error('Đã hủy lượt tìm font.');
+        results.sort(function(a,b){return b.score-a.score;});
+        var best=results.length?results[0].score:0;
+        if(best>=LOCAL_CONFIDENCE){
+          renderResults(results.slice(0,30),previewText);
+          showStatus('Đã có kết quả từ font trên máy. Có thể tiếp tục tra cứu Google Fonts.','info');
+          showGoogleFallbackLink(sampleChar,targetFeat,previewText,job);
+        } else return runGoogleTier(sampleChar,targetFeat,previewText,'Không tìm thấy kết quả phù hợp trong font máy. ',job);
       });
-    } else {
-      finalPromise = runGoogleTier(sampleChar, targetFeat, previewText, '');
-    }
-
+    } else if(state.googleFonts && state.googleFonts.length) finalPromise=runGoogleTier(sampleChar,targetFeat,previewText,'',job);
+    else if(googleApiKeyInput.value.trim()) finalPromise=loadGoogleCatalog().then(function(ok){if(!ok) throw new Error('Không tải được danh mục Google Fonts.'); return runGoogleTier(sampleChar,targetFeat,previewText,'',job);});
+    else finalPromise=Promise.reject(new Error('Để tìm trên toàn bộ Google Fonts, cần nhập API key và tải danh mục đầy đủ trước. Không dùng danh sách 48 font mẫu thay thế.')); 
     finalPromise.catch(function(err){
-      console.error(err);
-      showStatus('Có lỗi khi so khớp font, vui lòng thử lại.');
+      if(job.cancelled || (err && /hủy/.test(err.message))) showStatus('Đã hủy lượt tìm font. Bạn có thể chỉnh ảnh rồi bắt đầu lại.','info');
+      else {console.error(err);showStatus(err && err.message ? err.message : 'Có lỗi khi xử lý dữ liệu font. Vui lòng thử lại.');}
     }).finally(function(){
+      if(activeJob===job) activeJob=null;
       setLoading(false);
+      if(job.cancelled) showStatus('Đã hủy lượt tìm font.','info');
     });
   }
+
 
   runBtn.addEventListener('click', runMatch);
   sampleInput.addEventListener('keydown', function(e){ if(e.key==='Enter') runMatch(); });
